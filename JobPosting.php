@@ -91,7 +91,7 @@
 <h1>Job Posting</h1>
 <div class="container">
   <h3>Please fill in all fields and click Submit.</h3>
-  <form method="post" action="p_form.php">
+  <form method="post" action="joblist.php">
 
     <label for="job_title">Job Title</label>
     <input type="text" name="job_title" id="job_title" placeholder="Job Title">
@@ -101,19 +101,19 @@
         <label for="state">Location</label>
         <select name="state" id="state">
           <option value="">-- Select a State --</option>
-          <option value="SB">Sabah</option>
-          <option value="SR">Sarawak</option>
-          <option value="PS">Perlis</option>
-          <option value="PHG">Pahang</option>
-          <option value="PRK">Perak</option>
-          <option value="PP">Pulau Pinang</option>
-          <option value="TG">Terengganu</option>
-          <option value="KD">Kedah</option>
-          <option value="KTN">Kelantan</option>
-          <option value="NS">Negeri Sembilan</option>
-          <option value="MK">Melaka</option>
-          <option value="JR">Johor</option>
-          <option value="SLG">Selangor</option>
+          <option value="Sabah">Sabah</option>
+          <option value="Sarawak">Sarawak</option>
+          <option value="Perlis">Perlis</option>
+          <option value="Pahang">Pahang</option>
+          <option value="Perak">Perak</option>
+          <option value="Pulau Pinang">Pulau Pinang</option>
+          <option value="Terengganu">Terengganu</option>
+          <option value="Kedah">Kedah</option>
+          <option value="Kelantan">Kelantan</option>
+          <option value="Negeri Sembilan">Negeri Sembilan</option>
+          <option value="Melaka">Melaka</option>
+          <option value="Johor">Johor</option>
+          <option value="Selangor">Selangor</option>
           <!-- Add more states as needed -->
         </select>
       </div>
@@ -124,18 +124,31 @@
     </div>
 
     <label for="programme">Programme</label>
-    <select name="programme" id="programme">
-      <option value="">Select a Programme</option>
-      <option value="dcs">Diploma in Computer Science</option>
-      <option value="gt">Bachelor of Information Technology (Game Technology)</option>
-      <option value="cs">Bachelor of Computer Science (Computer Security)</option>
-      <option value="cn">Bachelor of Computer Science (Computer Networking)</option>
-      <option value="sd">Bachelor of Computer Science (Software Development)</option>
-      <option value="dm">Bachelor of Computer Science (Database Management)</option>
-      <option value="im">Bachelor of Computer Science (Interactive Media)</option>
-      <option value="ai">Bachelor of Computer Science (Artificial Intelligence)</option>
-      <option value="cca">Bachelor of Technology in Cloud Computing and Application with Honours</option>
-    </select>
+    <div style="
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f2f2f2;
+      margin-bottom: 20px;
+    ">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+        <label><input type="checkbox" name="programme[]" value="Computer Science"> <span style="font-weight: normal;">Computer Science</span></label>
+        <label><input type="checkbox" name="programme[]" value="Game Technology"> <span style="font-weight: normal;">Game Technology</span></label>
+        <label><input type="checkbox" name="programme[]" value="Computer Security"> <span style="font-weight: normal;">Computer Security</span></label>
+        <label><input type="checkbox" name="programme[]" value="Computer Networking"> <span style="font-weight: normal;">Computer Networking</span></label>
+        <label><input type="checkbox" name="programme[]" value="Software Development"> <span style="font-weight: normal;">Software Development</span></label>
+        <label><input type="checkbox" name="programme[]" value="Database Management"> <span style="font-weight: normal;">Database Management</span></label>
+        <label><input type="checkbox" name="programme[]" value="Interactive Media"> <span style="font-weight: normal;">Interactive Media</span></label>
+        <label><input type="checkbox" name="programme[]" value="Artificial Intelligence"> <span style="font-weight: normal;">Artificial Intelligence</span></label>
+        <label><input type="checkbox" name="programme[]" value="Cloud Computing"> <span style="font-weight: normal;">Cloud Computing</span></label>
+      </div>
+    </div>
+
+
+    <label for="allowance">Monthly Allowance (MYR)</label>
+    <input type="text" name="allowance" id="allowance" placeholder="e.g. 500">
+
+
 
     <label for="job_details">Job Details</label>
     <textarea name="job_details" id="job_details" placeholder="Describe the job..."></textarea>
@@ -147,6 +160,10 @@
 
   </form>
 </div>
+
+<?php
+include("footer.php");
+?>
 
 </body>
 </html>

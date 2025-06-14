@@ -38,16 +38,17 @@ CREATE TABLE Employer (
 );
 
 -- 5. Internship Listings
-CREATE TABLE Intern_Listings (
-    InternshipID INT PRIMARY KEY,
-    Int_Location VARCHAR(100),
-    Int_Duration VARCHAR(50),
-    Int_Industry VARCHAR(100),
-    Int_Position VARCHAR(100),
-    Int_Program VARCHAR(100),
+CREATE TABLE intern_listings (
+    InternshipID INT AUTO_INCREMENT PRIMARY KEY,
+    Int_Position VARCHAR(255),
+    Int_State VARCHAR(100),
+    Int_City VARCHAR(100),
+    Int_Programme TEXT,
+    Int_Allowance DECIMAL(10, 2),
     Int_Details TEXT,
     EmployerID INT,
-    FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID)
+    PostedAt DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (EmployerID) REFERENCES employers(EmployerID)
 );
 
 -- 6. Student Application
@@ -59,6 +60,6 @@ CREATE TABLE Student_Application (
     EmployerID INT,
     PRIMARY KEY (StudentID, InternshipID),
     FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
-    FOREIGN KEY (InternshipID) REFERENCES InternListings(InternshipID),
+    FOREIGN KEY (InternshipID) REFERENCES Intern_Listings(InternshipID),
     FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID)
 );

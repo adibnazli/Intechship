@@ -190,4 +190,9 @@ include("EmployerHeader.php");
     });
   });
 </script>
+
+<?php
+include("footer.php");
+?>
+
 </body>

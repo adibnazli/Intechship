@@ -1,13 +1,20 @@
+<?php
+include("EmployerHeader.php");
+include("config/config.php");
+
+// Fetch jobs (you can filter by EmployerID if needed)
+$sql = "SELECT * FROM intern_listings ORDER BY InternshipID DESC";
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Employer Post Listings</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Martel+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="PostListing.css" type="text/css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employer Post Listings</title>
-
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -50,7 +57,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      font-family: 'Martel Sans', sans-serif;
       font-size: 16px;
       color: #333;
     }
@@ -60,104 +66,121 @@
       position: relative;
     }
 
-
     .threedots-wrapper img {
-        height: 22px;
-        padding: 5px;
-        padding-top: 30px;
+      height: 22px;
+      padding: 5px;
+      padding-top: 30px;
     }
 
     .dropdown-menu {
-        position: absolute;
-        right: 0;
-        top: 70px;
-        background-color: #fff;
-        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-        display: none;
-        flex-direction: column;
-        z-index: 100;
-        border-radius: 4px;
-        width: 140px;
+      position: absolute;
+      right: 0;
+      top: 70px;
+      background-color: #fff;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      border-radius: 4px;
+      width: 140px;
     }
 
     .dropdown-item {
-        padding: 16px;
-        text-align: left;
-        background: none;
-        border: none;
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px;
-        cursor: pointer;
+      padding: 16px;
+      text-align: left;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #333;
     }
 
     .dropdown-item:hover {
-        background-color: #f1f1f1;
+      background-color: #f1f1f1;
     }
-
-    .job-status {
-        background-color:rgb(172, 235, 187);
-        color: #155724; 
-        text-align: center;
-        margin-top: 2px;
-        margin-left: 35px;
-        border-radius: 10px;
-        font-family: 'Roboto', sans-serif;
-        font-weight: bolder;
-        font-size: 14px;
-        width: 260px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .job-status p {
-        padding: 8px;
-    }
-
   </style>
 </head>
 <body>
-  <?php
-  include("EmployerHeader.php");
-  ?>
-  <h1>Post Listing</h1>
-<div class="job-template">
-  <div class="job-info">
-    <h2>Software Engineering Internship</h2>
-    <nav class="nav-jobdesc">
-        <ul>
-            <li>Razer Malaysia</li>
-            <li>Shah Alam, Selangor</li>
-            <li>Diploma</li>
-            <li>1 week ago</li>
-        </ul>
-    </nav>
-    <div class="job-status">
-        <p>APPLICATION AVAILABLE</p>
-    </div>
-  </div>
-  <div class="threedots-wrapper">
-    <img src="image/3-dots-icon.png" alt="3 dots icon" class="dropdown-toggle">
-    <div class="dropdown-menu">
-        <button class="dropdown-item">Edit</button>
-        <button class="dropdown-item">Delete</button>
-    </div>
-  </div>
-</div>
+
+<h1>Post Listings</h1>
+
+      <?php if ($result->num_rows > 0): ?>
+      <?php while($row = $result->fetch_assoc()): ?>
+        <?php
+          $postedAt = $row['PostedAt'];
+          $postedDate = new DateTime($postedAt);
+          $today = new DateTime();
+          $interval = $today->diff($postedDate);
+
+          if ($interval->y > 0) {
+              $postedAgo = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+          } elseif ($interval->m > 0) {
+              $postedAgo = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+          } elseif ($interval->d >= 7) {
+              $weeks = floor($interval->d / 7);
+              $postedAgo = $weeks . ' week' . ($weeks > 1 ? 's' : '') . ' ago';
+          } elseif ($interval->d > 0) {
+              $postedAgo = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+          } else {
+              $postedAgo = 'Today';
+          }
+        ?>
+
+        <div class="job-template">
+          <div class="job-info">
+            <h2><?= htmlspecialchars($row['Int_Position']) ?></h2>
+            <nav class="nav-jobdesc">
+              <ul>
+                <li>Razer Malaysia</li>
+                <li><?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></li>
+                <li><?= htmlspecialchars($row['Int_Programme']) ?></li>
+                <li>RM<?= htmlspecialchars($row['Int_Allowance']) ?>/month</li>
+                <li><?= $postedAgo ?></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="threedots-wrapper">
+            <img src="image/3-dots-icon.png" alt="3 dots icon" class="dropdown-toggle">
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="editjob.php?id=<?= $row['InternshipID'] ?>">Edit</a>
+              <a class="dropdown-item" href="deletejob.php?id=<?= $row['InternshipID'] ?>" onclick="return confirm('Are you sure you want to delete this job?');">Delete</a>
+            </div>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p style="text-align:center;">No jobs posted yet.</p>
+    <?php endif; ?>
+
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.querySelector('.dropdown-toggle');
-    const menu = document.querySelector('.dropdown-menu');
-
-    toggle.addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent click from bubbling
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    const toggles = document.querySelectorAll('.dropdown-toggle');
+    toggles.forEach(toggle => {
+      const menu = toggle.nextElementSibling;
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+      });
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', function() {
-      menu.style.display = 'none';
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.style.display = 'none';
+      });
     });
   });
 </script>
 
+<?php
+include("footer.php");
+?>
+
 </body>
 </html>
+
+<?php
+$conn->close();
+?>
