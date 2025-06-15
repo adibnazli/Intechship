@@ -1,5 +1,5 @@
 <?php
-include("EmployerHeader.php");
+include("employerheader.php");
 include("config/config.php");
 
 // Fetch student application by Application Date on a descending order

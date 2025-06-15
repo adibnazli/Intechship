@@ -86,7 +86,7 @@
   </style>
 </head>
 <body>
-<?php include("EmployerHeader.php"); ?>
+<?php include("employerheader.php"); ?>
 
 <h1>Job Posting</h1>
 <div class="container">
