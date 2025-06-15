@@ -204,8 +204,9 @@ $result = $conn->query($sql);
                         <div class="threedots-wrapper">
                           <img src="image/horizontal 3 dots image.png" alt="horizontal 3 dots" class="dropdown-toggle">
                           <div class="dropdown-menu">
-                            <button class="dropdown-item">Edit</button>
-                            <button class="dropdown-item">Delete</button>
+                            <button class="dropdown-item">Interview</button>
+                            <button class="dropdown-item">Accept</button>
+                            <button class="dropdown-item">Reject</button>
                           </div>
                         </div>
                       </td>

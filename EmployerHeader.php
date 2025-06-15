@@ -1,3 +1,10 @@
+<!-- <?php
+include("config/config.php");
+
+$sql = "SELECT Comp_Name FROM employer";
+$result = $conn->query($sql);
+?> -->
+
 <html>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +66,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 </ul>
             </nav>
-                <button class="logout-btn">Log Out</button> 
+            <!-- <div class="username"><?= htmlspecialchars($row['Comp_Name']) ?></div> -->
+            <button class="logout-btn">Log Out</button> 
     </div>
   </div>
 <script>
