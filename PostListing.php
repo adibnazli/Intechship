@@ -3,7 +3,11 @@ include("EmployerHeader.php");
 include("config/config.php");
 
 // Fetch jobs (you can filter by EmployerID if needed)
-$sql = "SELECT * FROM intern_listings ORDER BY InternshipID DESC";
+$sql = "SELECT intern_listings.*, employer.Comp_Name 
+        FROM intern_listings 
+        JOIN employer ON intern_listings.EmployerID = employer.EmployerID 
+        ORDER BY intern_listings.InternshipID DESC";
+
 $result = $conn->query($sql);
 ?>
 
@@ -12,9 +16,6 @@ $result = $conn->query($sql);
 <head>
   <meta charset="UTF-8">
   <title>Employer Post Listings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Martel+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="PostListing.css" type="text/css">
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -132,7 +133,7 @@ $result = $conn->query($sql);
             <h2><?= htmlspecialchars($row['Int_Position']) ?></h2>
             <nav class="nav-jobdesc">
               <ul>
-                <li>Razer Malaysia</li>
+                <li><?= htmlspecialchars($row['Comp_Name']); ?></li>
                 <li><?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></li>
                 <li><?= htmlspecialchars($row['Int_Programme']) ?></li>
                 <li>RM<?= htmlspecialchars($row['Int_Allowance']) ?>/month</li>
