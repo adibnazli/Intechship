@@ -1,5 +1,5 @@
 -- 1. Academic Unit
-CREATE TABLE Academic_Unit (
+CREATE TABLE academic_unit (
     AcademicID INT PRIMARY KEY,
     Acad_Name VARCHAR(100),
     Acad_Email VARCHAR(100),
@@ -7,7 +7,7 @@ CREATE TABLE Academic_Unit (
 );
 
 -- 2. Person-In-Charge
-CREATE TABLE Person_In_Charge (
+CREATE TABLE person_in_charge (
     PicID INT PRIMARY KEY,
     Pic_Name VARCHAR(100),
     Pic_Email VARCHAR(100),
@@ -15,20 +15,21 @@ CREATE TABLE Person_In_Charge (
 );
 
 -- 3. Student
-CREATE TABLE Student (
-    StudentID INT PRIMARY KEY,
-    Stud_Name VARCHAR(100),
+CREATE TABLE student (
+    StudentID INT PRIMARY KEY,                
+    Stud_Name VARCHAR(100),                      
     Stud_MatricNo VARCHAR(50),
-    Stud_Email VARCHAR(100),
-    Stud_Resume TEXT,
-    AcademicID INT,
-    PicID INT,
-    FOREIGN KEY (AcademicID) REFERENCES Academic_Unit(AcademicID),
+    Stud_Phone VARCHAR(30),                    
+    Stud_Programme VARCHAR(100),                   
+    Stud_Email VARCHAR(100),                       
+    Stud_ResumePath VARCHAR(255),                  
+    PicID INT,                                     
     FOREIGN KEY (PicID) REFERENCES Person_In_Charge(PicID)
 );
 
+
 -- 4. Employer
-CREATE TABLE Employer (
+CREATE TABLE employer (
     EmployerID INT PRIMARY KEY,
     Comp_Name VARCHAR(100),
     Address TEXT,
@@ -47,19 +48,19 @@ CREATE TABLE intern_listings (
     Int_Allowance DECIMAL(10, 2),
     Int_Details TEXT,
     EmployerID INT,
-    PostedAt DATE DEFAULT CURRENT_DATE,
+    PostedAt DATE DEFAULT (CURRENT_DATE),
     FOREIGN KEY (EmployerID) REFERENCES employers(EmployerID)
 );
 
 -- 6. Student Application
-CREATE TABLE Student_Application (
+CREATE TABLE student_application (
     StudentID INT,
     InternshipID INT,
-    App_Date DATE,
-    App_Status VARCHAR(50),
+    App_Date DATE DEFAULT (CURRENT_DATE),
+    App_Status VARCHAR(20), 
     EmployerID INT,
     PRIMARY KEY (StudentID, InternshipID),
     FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
-    FOREIGN KEY (InternshipID) REFERENCES Intern_Listings(InternshipID),
+    FOREIGN KEY (InternshipID) REFERENCES intern_listings(InternshipID),
     FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID)
 );
