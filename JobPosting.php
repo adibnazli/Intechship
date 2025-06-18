@@ -114,7 +114,6 @@
           <option value="Melaka">Melaka</option>
           <option value="Johor">Johor</option>
           <option value="Selangor">Selangor</option>
-          <!-- Add more states as needed -->
         </select>
       </div>
       <div>

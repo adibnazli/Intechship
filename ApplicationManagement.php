@@ -6,7 +6,7 @@ include("config/config.php");
 $sql = "SELECT student_application.*, 
                student.Stud_Name, 
                student.Stud_Programme, 
-               student.Stud_Email, 
+               student.Email, 
                student.Stud_Phone, 
                student.Stud_ResumePath,
                intern_listings.Int_Position 
@@ -189,7 +189,7 @@ $result = $conn->query($sql);
                       <td class="candidate">
                         <div class="line"><strong><?= htmlspecialchars($row['Stud_Name']) ?></strong></div>
                         <div class="line"><?= htmlspecialchars($row['Stud_Programme']) ?></div>
-                        <div class="line"><?= htmlspecialchars($row['Stud_Email']) ?></div>
+                        <div class="line"><?= htmlspecialchars($row['Email']) ?></div>
                         <div class="line"><?= htmlspecialchars($row['Stud_Phone']) ?></div>
                       </td>
                       <td class="position">
@@ -223,21 +223,34 @@ $result = $conn->query($sql);
           </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.querySelector('.dropdown-toggle');
-    const menu = document.querySelector('.dropdown-menu');
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggles = document.querySelectorAll(".dropdown-toggle");
 
-    toggle.addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent click from bubbling
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    toggles.forEach(function (toggle) {
+      const menu = toggle.nextElementSibling;
+
+      toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        // Close all other menus
+        document.querySelectorAll(".dropdown-menu").forEach(function (m) {
+          if (m !== menu) m.style.display = "none";
+        });
+
+        // Toggle current menu
+        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+      });
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function() {
-      menu.style.display = 'none';
+    // Close all menus on outside click
+    document.addEventListener("click", function () {
+      document.querySelectorAll(".dropdown-menu").forEach(function (menu) {
+        menu.style.display = "none";
+      });
     });
   });
 </script>
+
 
 
 <?php
