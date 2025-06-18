@@ -48,7 +48,7 @@ nav ul {
     color: #FFFFFF;
   }
 
-nav ul li a.active {
+  nav ul li a.active {
   color: #FFFFFF;
   text-decoration: underline;
   text-underline-offset: 8px;

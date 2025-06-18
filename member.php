@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($password !== $repassword) {
         echo "<script>alert('Passwords do not match!!!');</script>";
+        echo "<meta http-equiv='refresh' content='2;URL=register.php'>";
     } else {
         
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);

@@ -44,7 +44,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                     echo "<meta http-equiv='refresh' content='2;URL=login.html'>";
                 }
             } 
-            else if (str_ends_with($Email, '@admin.utem.edu.my')) 
+            else if (str_ends_with($Email, '@university.edu')) 
             {
                 // header("Location: admin_dashboard.php");
             } 

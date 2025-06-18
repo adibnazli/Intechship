@@ -1,0 +1,85 @@
+body{
+    background-color: #fcfcfc;
+}
+
+.container{
+
+    background-color: #cfcdcd;
+    width: 80%;
+    margin: 50px auto;
+    padding: 50px;
+    border-radius: 10px;
+    justify-content: space-between;
+}
+
+hr{
+    border: none;
+    height: 1px;
+    background-color: #333;
+}
+
+.short-line{
+    width: 80px;
+    height: 4px;
+    background-color: #333;
+    border: none;
+    margin: 10px 0 20px;
+}
+
+h4{
+    margin-top: 0;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; 
+    flex-wrap: nowrap;
+}
+.generals{
+    margin: 0;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.buttonCan, .buttonSave {
+    color: rgb(7, 7, 1);
+    background-color: #FFD900;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2)  ;
+}
+
+.form{
+    display: block;
+}
+
+.form-content {
+    display: flex;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.left-form, .right-form{
+    flex: 1;
+}
+
+input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+}
+
+
+
+
+
+
