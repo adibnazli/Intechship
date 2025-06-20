@@ -16,10 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $appid = $_POST['appid'] ?? '';
 
     // Get student name
-    $sql = "SELECT student.Stud_Name 
+    $sql = "SELECT student.Stud_Name, intern_listings.Int_Position, intern_listings.Int_State, intern_listings.Int_City
             FROM student_application 
             JOIN student ON student_application.StudentID = student.StudentID 
+            JOIN intern_listings ON student_application.InternshipID = intern_listings.InternshipID
             WHERE student_application.ApplicationID = ?";
+
     
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $appid);
@@ -28,6 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($row = $result->fetch_assoc()) {
         $studentName = $row['Stud_Name'];
+        $position = $row['Int_Position'];
+        $state = $row['Int_State'];
+        $city = $row['Int_City'];
+
 
         // Create PHPMailer instance
         $mail = new PHPMailer(true);
@@ -47,27 +53,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Email content
             $mail->isHTML(true);
-            $mail->Subject = "Interview Invitation from $company";
+            $mail->Subject = "Internship Offer from $company";
             $mail->Body = "
                 Dear $studentName,<br><br>
-                Congratulations! You have been shortlisted for an interview with <strong>$company</strong>.<br><br>
-                <strong>Interview Details:</strong><br>
+                We are pleased to inform you that you have been selected for an <strong>internship opportunity</strong> with <strong>$company</strong>.<br><br>
+                <strong>Offer Details:</strong><br>
                 - Company: $company<br>
                 - Application ID: $appid<br>
-                - Date: [Insert Date Here]<br>
-                - Time: [Insert Time Here]<br>
-                - Location/Link: [Insert Location or Online Link Here]<br><br>
-                Please confirm your availability by replying to this email.<br><br>
+                - Position: $position<br>
+                - Duration: 2 months<br>
+                - Location: $state, $city<br><br>
+                Please confirm your acceptance of this offer by replying to this email as soon as possible.<br><br>
+                We look forward to welcoming you to our team.<br><br>
                 Best regards,<br>
                 $company Recruitment Team
             ";
 
+
             // Send the email
             $mail->send();
-            echo "Interview email sent to $email.";
+            echo "Internship offer email sent to $email.";
 
             // Update application status in database
-            $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Interview' WHERE ApplicationID = ?");
+            $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Offered' WHERE ApplicationID = ?");
             $stmt->bind_param("i", $appid);
         } 
         catch (Exception $e) {

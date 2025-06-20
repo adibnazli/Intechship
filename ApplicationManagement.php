@@ -228,8 +228,9 @@ $result = $conn->query($sql);
                           <img src="image/horizontal 3 dots image.png" alt="horizontal 3 dots" class="dropdown-toggle">
                           <div class="dropdown-menu">
                             <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Interview</button>
-                            <button class="dropdown-item">Offer</button>
-                            <button class="dropdown-item">Reject</button>
+                            <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Offer</button>
+                            <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Reject</button>
+
                           </div>
                         </div>
                       </td>
@@ -272,7 +273,7 @@ $result = $conn->query($sql);
       });
     });
 
-    // Interview button click logic
+    // Interview button click
     document.querySelectorAll('.interview-btn').forEach(button => {
       button.addEventListener('click', function () {
         const email = this.getAttribute('data-email');
@@ -286,13 +287,52 @@ $result = $conn->query($sql);
         })
         .then(response => response.text())
         .then(data => {
-          alert(data); // Show success or error message
+          alert(data);
+        });
+      });
+    });
+
+    // Offer button click
+    document.querySelectorAll('.offer-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const email = this.getAttribute('data-email');
+        const company = this.getAttribute('data-company');
+        const appid = this.getAttribute('data-appid');
+
+        fetch('send_offer_email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+        })
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
+        });
+      });
+    });
+
+    // Reject button click
+    document.querySelectorAll('.reject-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const email = this.getAttribute('data-email');
+        const company = this.getAttribute('data-company');
+        const appid = this.getAttribute('data-appid');
+
+        fetch('send_rejection_email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+        })
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
         });
       });
     });
 
   });
 </script>
+
 
 <?php
 include("footer.php");

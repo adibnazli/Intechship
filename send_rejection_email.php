@@ -16,10 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $appid = $_POST['appid'] ?? '';
 
     // Get student name
-    $sql = "SELECT student.Stud_Name 
+    $sql = "SELECT student.Stud_Name, intern_listings.Int_Position, intern_listings.Int_State, intern_listings.Int_City
             FROM student_application 
             JOIN student ON student_application.StudentID = student.StudentID 
+            JOIN intern_listings ON student_application.InternshipID = intern_listings.InternshipID
             WHERE student_application.ApplicationID = ?";
+
     
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $appid);
@@ -28,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($row = $result->fetch_assoc()) {
         $studentName = $row['Stud_Name'];
+        $position = $row['Int_Position'];
 
         // Create PHPMailer instance
         $mail = new PHPMailer(true);
@@ -47,27 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Email content
             $mail->isHTML(true);
-            $mail->Subject = "Interview Invitation from $company";
+            $mail->Subject = "Internship Application Outcome from $company";
             $mail->Body = "
                 Dear $studentName,<br><br>
-                Congratulations! You have been shortlisted for an interview with <strong>$company</strong>.<br><br>
-                <strong>Interview Details:</strong><br>
-                - Company: $company<br>
-                - Application ID: $appid<br>
-                - Date: [Insert Date Here]<br>
-                - Time: [Insert Time Here]<br>
-                - Location/Link: [Insert Location or Online Link Here]<br><br>
-                Please confirm your availability by replying to this email.<br><br>
-                Best regards,<br>
+                Thank you for your interest in the internship opportunity at <strong>$company</strong>.<br><br>
+                We appreciate the time and effort you invested in your application for the <strong>$position</strong> position.<br><br>
+                After careful consideration, we regret to inform you that you have not been selected for the internship.<br><br>
+                Please do not be discouraged. We encourage you to apply for future opportunities that align with your interests and skills.<br><br>
+                We wish you all the best in your academic and professional endeavors.<br><br>
+                Kind regards,<br>
                 $company Recruitment Team
             ";
 
             // Send the email
             $mail->send();
-            echo "Interview email sent to $email.";
+            echo "Internship rejection email sent to $email.";
 
             // Update application status in database
-            $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Interview' WHERE ApplicationID = ?");
+            $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Rejected' WHERE ApplicationID = ?");
             $stmt->bind_param("i", $appid);
         } 
         catch (Exception $e) {
