@@ -36,7 +36,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                 $approve = $user['approve']; 
 
                 if($approve == 1) {
-                    header("Location: Employer.php");
+                    //header("Location: Employer.php");
                 } 
                 else {
                     echo "<script>alert('Your account is not approved yet! Please register first');</script>";
