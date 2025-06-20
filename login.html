@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page(Academic Unit)</title>
+    <link rel="stylesheet" href="LoginStyle.css" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  </head>
+  <body>
+
+    <div class="main-container">
+      <div class="left-content">
+        <div class="welcome">
+          <h1>Welcome</h1>
+        </div>
+        <div class="wrapper">
+          <form action="loginValid.php" method="post">
+            <h1>Sign In</h1>
+            <div class="input-box">
+              <input type="text" id="Email" name = "Email" placeholder="Email" autocomplete="off" required />
+              <i class="bx bxs-user"></i>
+            </div>
+            <div class="input-box">
+              <input type="password" name="password" placeholder="Password" required />
+              <i class="bx bxs-lock-alt"></i>
+            </div>
+          
+            <button type="submit" class="btn">Sign in</button>
+          </form>
+          <p class="center"><br><b>New Student? <a href="StudentCheck.php" style="color: bisque;">Sign-up now..</a></b></p>
+        </div>
+      </div>
+      
+      <div class="right-content">
+        <img src="logo.png" alt="Logo" /> 
+      </div>
+    </div>
+  </body>
+</html>

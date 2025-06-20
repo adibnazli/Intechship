@@ -1,0 +1,136 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body{
+    display:flex;
+    align-items: center;
+    min-height: 100vh;
+    background: url('background.png') no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+
+.main-container{
+    display: flex;
+    width: 100%;
+    max-width: none;
+    justify-content: space-between;
+    align-items: center;
+}
+.left-content{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    padding-left: 150px;
+}
+
+.welcome h1{
+    font-size: 40px;
+    color: #fff;
+    padding-left: 45px;
+}
+
+.wrapper{
+    width: 420px;
+    background:transparent;
+    border: 2px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    color: #fff;
+    border-radius: 10px;
+    padding: 30px 40px;
+}
+
+.wrapper h1{
+    font-size: 50px;
+    padding-left: 10px;
+}
+
+.wrapper .input-box{
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+
+
+.input-box input{
+    width: 100%;
+    height: auto;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder{
+    color: #fff;
+}
+
+.input-box i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.wrapper .btn{
+    width: 100%;
+    height: 45px;
+    background: #d7c100e0;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    transition: box-shadow 1.5s ease;
+}
+
+.wrapper .btn:hover {
+    box-shadow: 0 0 5px #fcf002,0 0 25px #fcf002,0 0 50px #fcf002,0 0 100px #fcf002;
+}
+
+.right-content {
+    display: flex;
+    justify-content: flex-end;   
+    align-items: flex-start;     
+    flex: 1;
+    padding-bottom: 100px;          
+    padding-right: 80px;        
+}
+
+
+.Register-Login .wrapper .input-box{
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 15px 0;
+}
+
+
+.Register-Login .input-box input{
+    width: 100%;
+    height: auto;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 15px 45px 15px 20px;
+}
