@@ -1,3 +1,9 @@
+<?php
+session_start();
+include("employerheader.php");
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,8 +92,6 @@
   </style>
 </head>
 <body>
-<?php include("employerheader.php"); ?>
-
 <h1>Job Posting</h1>
 <div class="container">
   <h3>Please fill in all fields and click Submit.</h3>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('connect.php');
+include("config/config.php");
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,7 +12,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
     $Email = $_SESSION['Email'];
     $password = $_SESSION['password'];
 
-    $tables = ['student', 'person_in_charge', 'academic_unit'];
+    $tables = ['student', 'person_in_charge', 'academic_unit', 'employer'];
     $user = null;
 
     foreach ($tables as $table) {
@@ -50,8 +50,12 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
             } 
             else if (str_ends_with($Email, '@employer.my')) 
             {
-                // header("Location: employer_dashboard.php");
-            } 
+                $_SESSION['EmployerID'] = $user['EmployerID'];
+                $_SESSION['Comp_Name'] = $user['Comp_Name'];
+
+                header("Location: postlisting.php");
+            }
+
             else if (str_ends_with($Email, '@academic.utem.edu.my')) 
             {
                 header("Location: AdminRegistration.php");

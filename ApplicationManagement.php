@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['Comp_Name'])) {
+    header("Location: login.html"); // or your login page
+    exit();
+}
+
 include("employerheader.php");
 include("config/config.php");
 
@@ -105,7 +111,7 @@ $result = $conn->query($sql);
 
 
     .pending {
-      background-color: #b2ebf2;
+      background-color:rgb(86, 235, 255);
       color: #000;
     }
 
@@ -115,12 +121,12 @@ $result = $conn->query($sql);
     }
 
     .interview {
-      background-color: #2577db;
+      background-color:rgb(245, 136, 34);
       color: #000;
     }
 
-    .accepted {
-      background-color: #98f598;
+    .offered {
+      background-color:rgb(95, 255, 95);
       color: #000;
     }
 
@@ -230,7 +236,6 @@ $result = $conn->query($sql);
                             <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Interview</button>
                             <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Offer</button>
                             <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Reject</button>
-
                           </div>
                         </div>
                       </td>

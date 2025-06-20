@@ -46,6 +46,10 @@ body {
         height: 60px;
     }
 
+    .logout-btn {
+      text-decoration: none;
+    }
+
     </style>
 </head>
 <body>    
@@ -66,11 +70,25 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 </ul>
             </nav>
-            <!-- <div class="username"><?= htmlspecialchars($row['Comp_Name']) ?></div> -->
-            <button class="logout-btn">Log Out</button> 
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
+              <div style="color: white; font-family: 'Roboto', sans-serif; font-size: 16px; margin-right: 20px;">
+                <?php
+                  if (isset($_SESSION['Comp_Name'])) {
+                      echo htmlspecialchars($_SESSION['Comp_Name']);
+                  } else {
+                      echo 'Company Name';
+                  }
+                ?>
+              </div>
+              <a href="logout.php" class="logout-btn" onclick="return confirmLogout()">Log Out</a>
+            </div>
+
     </div>
   </div>
 <script>
+  function confirmLogout() {
+    return confirm("Are you sure you want to log out?");
+  }
 </script>
 </body>
 </html>

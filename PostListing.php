@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("employerheader.php");
 include("config/config.php");
 

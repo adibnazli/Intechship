@@ -11,9 +11,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $email = $_POST['email'] ?? '';
     $company = $_POST['company'] ?? '';
-    $appid = $_POST['appid'] ?? '';
+    $appid = isset($_POST['appid']) ? (int) $_POST['appid'] : 0;
+    if ($appid <= 0) {
+        echo "❌ Application ID is missing or invalid.";
+        exit;
+    }
 
     // Get student name
     $sql = "SELECT student.Stud_Name, intern_listings.Int_Position, intern_listings.Int_State, intern_listings.Int_City
@@ -56,13 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Subject = "Internship Offer from $company";
             $mail->Body = "
                 Dear $studentName,<br><br>
-                We are pleased to inform you that you have been selected for an <strong>internship opportunity</strong> with <strong>$company</strong>.<br><br>
+                We are pleased to inform you that you have been selected for an <strong>INTERNSHIP OPPORTUNITY</strong> with <strong>$company</strong>.<br><br>
                 <strong>Offer Details:</strong><br>
                 - Company: $company<br>
                 - Application ID: $appid<br>
                 - Position: $position<br>
                 - Duration: 2 months<br>
-                - Location: $state, $city<br><br>
+                - Location: $state, $city<br><br><br><br><br>
                 Please confirm your acceptance of this offer by replying to this email as soon as possible.<br><br>
                 We look forward to welcoming you to our team.<br><br>
                 Best regards,<br>
@@ -77,6 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update application status in database
             $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Offered' WHERE ApplicationID = ?");
             $stmt->bind_param("i", $appid);
+            $stmt->execute();
+
         } 
         catch (Exception $e) {
             echo "Failed to send email. Mailer Error: {$mail->ErrorInfo}";
