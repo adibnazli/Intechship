@@ -2,7 +2,6 @@
 include("employerheader.php");
 include("config/config.php");
 
-// Fetch student application by Application Date on a descending order
 $sql = "SELECT student_application.*, 
                student.Stud_Name, 
                student.Stud_Programme, 
@@ -78,6 +77,15 @@ $result = $conn->query($sql);
       font-size: 18px;
     }
 
+    .download-icon {
+      height: 20px;
+      width: auto;
+      margin-left: 12px;
+      margin-bottom: 3px;
+      vertical-align: middle; 
+    }
+
+
     .application-status {
       font-size: 13px;
       display: inline-block;
@@ -101,6 +109,16 @@ $result = $conn->query($sql);
       color: #000;
     }
 
+    .in-review {
+      background-color: #FFD900;
+      color: #000;
+    }
+
+    .interview {
+      background-color: #2577db;
+      color: #000;
+    }
+
     .accepted {
       background-color: #98f598;
       color: #000;
@@ -113,7 +131,7 @@ $result = $conn->query($sql);
 
     .application-received {
       background-color: #FFD900;
-      padding: 6px 30px;
+      padding: 3px 20px;
       font-size: 13px;
       font-weight: bold;
       border-radius: 8px;
@@ -194,18 +212,23 @@ $result = $conn->query($sql);
                       </td>
                       <td class="position">
                         <div><?= htmlspecialchars($row['Int_Position']) ?></div>
-                        <div><a class="application-received" href="<?= htmlspecialchars($row['Stud_ResumePath']) ?>"download>Application Received</a></div>
+                        <a class="application-received" href="download_resume.php?appid=<?= $row['ApplicationID'] ?>" target="_blank">Application Received<img src="image/download-icon.png" alt="FTMK Logo" class="download-icon"></a>
                       </td>
                       <td class="application-status-cell">
-                        <div class="application-status pending"><?= htmlspecialchars($row['App_Status']) ?></div>
+                        <?php
+                          $statusClass = strtolower(str_replace(' ', '-', $row['App_Status']));
+                        ?>
+                        <div class="application-status <?= $statusClass ?>">
+                          <?= htmlspecialchars($row['App_Status']) ?>
+                        </div>
                       </td>
                       <td><?= date('d/m/Y', strtotime($row['App_Date'])) ?></td>
                       <td>
                         <div class="threedots-wrapper">
                           <img src="image/horizontal 3 dots image.png" alt="horizontal 3 dots" class="dropdown-toggle">
                           <div class="dropdown-menu">
-                            <button class="dropdown-item">Interview</button>
-                            <button class="dropdown-item">Accept</button>
+                            <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Interview</button>
+                            <button class="dropdown-item">Offer</button>
                             <button class="dropdown-item">Reject</button>
                           </div>
                         </div>
@@ -248,10 +271,28 @@ $result = $conn->query($sql);
         menu.style.display = "none";
       });
     });
+
+    // Interview button click logic
+    document.querySelectorAll('.interview-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const email = this.getAttribute('data-email');
+        const company = this.getAttribute('data-company');
+        const appid = this.getAttribute('data-appid');
+
+        fetch('send_interview_email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+        })
+        .then(response => response.text())
+        .then(data => {
+          alert(data); // Show success or error message
+        });
+      });
+    });
+
   });
 </script>
-
-
 
 <?php
 include("footer.php");

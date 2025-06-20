@@ -24,7 +24,7 @@ CREATE TABLE student (
     Stud_Email VARCHAR(100),                       
     Stud_ResumePath VARCHAR(255),                  
     PicID INT,                                     
-    FOREIGN KEY (PicID) REFERENCES Person_In_Charge(PicID)
+    FOREIGN KEY (PicID) REFERENCES person_in_charge(PicID)
 );
 
 
@@ -35,7 +35,7 @@ CREATE TABLE employer (
     Address TEXT,
     Comp_RegistrationNo VARCHAR(50),
     PicID INT,
-    FOREIGN KEY (PicID) REFERENCES Person_In_Charge(PicID)
+    FOREIGN KEY (PicID) REFERENCES person_in_charge(PicID)
 );
 
 -- 5. Internship Listings
@@ -54,13 +54,12 @@ CREATE TABLE intern_listings (
 
 -- 6. Student Application
 CREATE TABLE student_application (
+    ApplicationID INT,
     StudentID INT,
     InternshipID INT,
     App_Date DATE DEFAULT (CURRENT_DATE),
     App_Status VARCHAR(20), 
-    EmployerID INT,
-    PRIMARY KEY (StudentID, InternshipID),
-    FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
-    FOREIGN KEY (InternshipID) REFERENCES intern_listings(InternshipID),
-    FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID)
+    PRIMARY KEY (ApplicationID),
+    FOREIGN KEY (StudentID) REFERENCES student(StudentID),
+    FOREIGN KEY (InternshipID) REFERENCES intern_listings(InternshipID)
 );
