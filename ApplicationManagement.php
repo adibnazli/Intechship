@@ -121,7 +121,7 @@ $result = $conn->query($sql);
     }
 
     .interview {
-      background-color:rgb(245, 136, 34);
+      background-color:rgb(255, 177, 9);
       color: #000;
     }
 
@@ -233,8 +233,8 @@ $result = $conn->query($sql);
                         <div class="threedots-wrapper">
                           <img src="image/horizontal 3 dots image.png" alt="horizontal 3 dots" class="dropdown-toggle">
                           <div class="dropdown-menu">
-                            <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Interview</button>
-                            <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Offer</button>
+                            <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Interview</button>
+                            <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Offer</button>
                             <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Reject</button>
                           </div>
                         </div>
@@ -281,6 +281,25 @@ $result = $conn->query($sql);
     // Interview button click
     document.querySelectorAll('.interview-btn').forEach(button => {
       button.addEventListener('click', function () {
+        const status = this.getAttribute('data-status');
+
+        if (['Offered', 'Rejected', 'Interview'].includes(status)) {
+          alert(`❌ An email has already been sent for this application (${status}).`);
+          return;
+        }
+
+        if (status !== 'In Review') {
+          alert("❌ You must review the student's resume before inviting them to interview.");
+          return;
+        }
+
+        const date = prompt("Enter Interview Date (e.g. 2025-07-03):");
+        if (!date) return;
+        const time = prompt("Enter Interview Time (e.g. 10:00 AM):");
+        if (!time) return;
+        const location = prompt("Enter Interview Location or Link:");
+        if (!location) return;
+
         const email = this.getAttribute('data-email');
         const company = this.getAttribute('data-company');
         const appid = this.getAttribute('data-appid');
@@ -288,7 +307,7 @@ $result = $conn->query($sql);
         fetch('send_interview_email.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&location=${encodeURIComponent(location)}`
         })
         .then(response => response.text())
         .then(data => {
@@ -297,9 +316,28 @@ $result = $conn->query($sql);
       });
     });
 
+
+
     // Offer button click
     document.querySelectorAll('.offer-btn').forEach(button => {
       button.addEventListener('click', function () {
+        const status = this.getAttribute('data-status');
+        if (['Offered', 'Rejected'].includes(status)) {
+          alert(`❌ An email has already been sent for this application (${status}).`);
+          return;
+        }
+
+        if (!['In Review', 'Interview'].includes(status)) {
+          alert("❌ You must review the student's resume before making an offer.");
+          return;
+        }
+
+        // Continue with form input prompt
+        const startDate = prompt("Enter Internship Start Date (e.g. 2025-07-01):");
+        if (!startDate) return;
+        const endDate = prompt("Enter Internship End Date (e.g. 2025-09-30):");
+        if (!endDate) return;
+
         const email = this.getAttribute('data-email');
         const company = this.getAttribute('data-company');
         const appid = this.getAttribute('data-appid');
@@ -307,7 +345,7 @@ $result = $conn->query($sql);
         fetch('send_offer_email.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`
         })
         .then(response => response.text())
         .then(data => {
@@ -315,6 +353,8 @@ $result = $conn->query($sql);
         });
       });
     });
+
+
 
     // Reject button click
     document.querySelectorAll('.reject-btn').forEach(button => {
