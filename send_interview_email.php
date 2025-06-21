@@ -9,11 +9,12 @@ require 'uploads/phpmailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Only get minimal inputs first (appid is enough to check)
 $email = $_POST['email'] ?? '';
 $company = $_POST['company'] ?? '';
 $appid = isset($_POST['appid']) ? (int) $_POST['appid'] : 0;
 
-// Protect: if already sent any email for this app, block
+// Step 1: Check if application status allows sending interview email
 $check = $conn->prepare("SELECT App_Status FROM student_application WHERE ApplicationID = ?");
 $check->bind_param("i", $appid);
 $check->execute();
@@ -21,6 +22,12 @@ $statusResult = $check->get_result();
 
 if ($statusRow = $statusResult->fetch_assoc()) {
     $currentStatus = $statusRow['App_Status'];
+
+    if ($currentStatus === 'Pending') {
+        echo "❌ You must review the student's resume before inviting them to interview.";
+        exit;
+    }
+
     if (in_array($currentStatus, ['Offered', 'Rejected', 'Interview'])) {
         echo "❌ An email has already been sent for this application ($currentStatus).";
         exit;
@@ -30,6 +37,12 @@ if ($statusRow = $statusResult->fetch_assoc()) {
     exit;
 }
 
+// Step 2: Now safe to collect interview details
+$date = $_POST['date'] ?? '[Insert Date Here]';
+$time = $_POST['time'] ?? '[Insert Time Here]';
+$location = $_POST['location'] ?? '[Insert Location Here]';
+
+// Step 3: Get student name
 $sql = "SELECT student.Stud_Name FROM student_application 
         JOIN student ON student_application.StudentID = student.StudentID 
         WHERE student_application.ApplicationID = ?";
@@ -60,10 +73,9 @@ if ($row = $result->fetch_assoc()) {
             Congratulations! You have been shortlisted for an interview with <strong>$company</strong>.<br><br>
             <strong>Interview Details:</strong><br>
             - Company: $company<br>
-            - Application ID: $appid<br>
-            - Date: [Insert Date Here]<br>
-            - Time: [Insert Time Here]<br>
-            - Location/Link: [Insert Location or Online Link Here]<br><br>
+            - Date: $date<br>
+            - Time: $time<br>
+            - Location/Link: $location<br><br>
             Please confirm your availability by replying to this email.<br><br>
             Best regards,<br>
             $company Recruitment Team

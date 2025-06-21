@@ -15,6 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $company = $_POST['company'] ?? '';
     $appid = isset($_POST['appid']) ? (int) $_POST['appid'] : 0;
+    $start_date = $_POST['start_date'] ?? '[Insert the start date here]';
+    $end_date = $_POST['end_date'] ?? '[Insert the end date here]';
+
     
     // Protect: if already sent any email for this app, block
     $check = $conn->prepare("SELECT App_Status FROM student_application WHERE ApplicationID = ?");
@@ -24,10 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($statusRow = $statusResult->fetch_assoc()) {
         $currentStatus = $statusRow['App_Status'];
-        if (in_array($currentStatus, ['Offered', 'Rejected', 'Interview'])) {
+        if (in_array($currentStatus, ['Offered', 'Rejected'])) {
             echo "❌ An email has already been sent for this application ($currentStatus).";
             exit;
         }
+
+        if (!in_array($currentStatus, ['In Review', 'Interview'])) {
+            echo "❌ You must review the student's resume before making an offer.";
+            exit;
+        }
+
     } else {
         echo "❌ Invalid Application ID.";
         exit;
@@ -77,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 We are pleased to inform you that you have been selected for an <strong>INTERNSHIP OPPORTUNITY</strong> with <strong>$company</strong>.<br><br>
                 <strong>Offer Details:</strong><br>
                 - Company: $company<br>
-                - Application ID: $appid<br>
                 - Position: $position<br>
-                - Duration: 2 months<br>
-                - Location: $state, $city<br><br><br><br><br>
+                - Start Date : $start_date<br>
+                - End Date : $end_date<br>
+                - Location: $city, $state<br><br><br><br><br>
                 Please confirm your acceptance of this offer by replying to this email as soon as possible.<br><br>
                 We look forward to welcoming you to our team.<br><br>
                 Best regards,<br>

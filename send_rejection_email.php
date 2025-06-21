@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($statusRow = $statusResult->fetch_assoc()) {
         $currentStatus = $statusRow['App_Status'];
-        if (in_array($currentStatus, ['Offered', 'Rejected', 'Interview'])) {
+        if (in_array($currentStatus, ['Offered', 'Rejected'])) {
             echo "❌ An email has already been sent for this application ($currentStatus).";
             exit;
         }
@@ -71,14 +71,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Subject = "Internship Application Outcome from $company";
             $mail->Body = "
                 Dear $studentName,<br><br>
-                Thank you for your interest in the internship opportunity at <strong>$company</strong>.<br><br>
-                We appreciate the time and effort you invested in your application for the <strong>$position</strong> position.<br><br>
-                After careful consideration, we regret to inform you that you have not been selected for the internship.<br><br>
-                Please do not be discouraged. We encourage you to apply for future opportunities that align with your interests and skills.<br><br>
-                We wish you all the best in your academic and professional endeavors.<br><br>
-                Kind regards,<br>
+
+                Thank you for interviewing for the position of <strong>$position</strong> with <strong>$company</strong>. 
+                We enjoyed the interview and hope your visit was both interesting and informative.<br><br>
+
+                Unfortunately, we are only able to select one candidate from among the many that applied for the position. 
+                Therefore, we regret to inform you that you were not selected as the leading candidate for the position of <strong>$position</strong>. 
+                We are currently unable to offer you an internship with <strong>$company</strong>.<br><br>
+
+                We wish you the best of success with your future endeavors. Please be mindful of any future opportunities that may exist with our department. 
+                We encourage you to apply for future jobs with our department.<br><br>
+
+                Thank you for your interest in <strong>$company</strong>.<br><br>
+
+                Regards,<br>
                 $company Recruitment Team
             ";
+
 
             // Send the email
             $mail->send();
