@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('connect.php');
+include('config/config.php');
 
 $Stud_Name = $_SESSION['Stud_Name'] ?? '';
 $Email = $_SESSION['Email'] ?? '';

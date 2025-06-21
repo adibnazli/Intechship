@@ -29,14 +29,17 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
     }
 
     if ($user !== null) {
-        if ($password === $user['password']) {
+        if (password_verify($password, $user['password'])) {
             
             if (str_ends_with($Email, '@student.utem.edu.my')) 
             {
+                $_SESSION['Stud_Name'] = $user['Stud_Name']; 
                 $approve = $user['approve']; 
+                $_SESSION['studentID'] = $user['StudentID'];
+
 
                 if($approve == 1) {
-                    //header("Location: Employer.php");
+                    header("Location: Profile.php");
                 } 
                 else {
                     echo "<script>alert('Your account is not approved yet! Please register first');</script>";

@@ -1,3 +1,9 @@
+<!-- <?php
+include("config/config.php");
+
+$sql = "SELECT Stud_Name FROM student";
+$result = $conn->query($sql);
+?> -->
 <html>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +13,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Document</title>
-<link rel="stylesheet" type="text/css" href="EmployerHeader.css">
+<link rel="stylesheet" type="text/css" href="employerheader.css">
 <style>
 body {
       margin: 0;
@@ -39,6 +45,10 @@ body {
         height: 60px;
     }
 
+    .logout-btn {
+      text-decoration: none;
+    }
+
     </style>
 </head>
 <body>    
@@ -54,15 +64,30 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <nav class="nav-menu">
                 <ul>
                     <li><a href="Profile.php" class="<?php echo ($current_page == 'Profile.php') ? 'active' : ''; ?>">Profile</a></li>
-                    <li><a href="InternshipSearch.php" class="<?php echo ($current_page == 'InternshipSearch.php') ? 'active' : ''; ?>">Intership Search</a></li>
-                    <li><a href="" class="<?php echo ($current_page == '') ? 'active' : ''; ?>">Progress Status</a></li>
+                    <li><a href="InternshipSearch.php" class="<?php echo ($current_page == 'InternshipSearch.php') ? 'active' : ''; ?>">Internship Search</a></li>
+                    <li><a href="progressStudent.php" class="<?php echo ($current_page == 'progressStudent.php') ? 'active' : ''; ?>">Progress Status</a></li>
 
                 </ul>
             </nav>
-                <button class="logout-btn">Log Out</button> 
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
+              <div style="color: white; font-family: 'Roboto', sans-serif; font-size: 16px; margin-right: 20px;">
+                <?php
+                  if (isset($_SESSION['Stud_Name'])) {
+                      echo htmlspecialchars($_SESSION['Stud_Name']);
+                  } else {
+                      echo 'Student Name';
+                  }
+                ?>
+              </div>
+              <a href="logout.php" class="logout-btn" onclick="return confirmLogout()">Log Out</a>
+            </div>
+
     </div>
   </div>
 <script>
+  function confirmLogout() {
+    return confirm("Are you sure you want to log out?");
+  }
 </script>
 </body>
 </html>
