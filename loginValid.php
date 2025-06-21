@@ -56,7 +56,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                 header("Location: postlisting.php");
             }
 
-            else if (str_ends_with($Email, '@academic.utem.edu.my')) 
+            else if (str_ends_with($Email, '@academic.my')) 
             {
                 header("Location: AdminRegistration.php");
             }

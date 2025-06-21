@@ -1,15 +1,16 @@
 body{
-    background-color: #fcfcfc;
+    background-color: #f6f6f6;
 }
 
 .container{
 
-    background-color: #cfcdcd;
+    background-color: #ffffff;
     width: 80%;
     margin: 50px auto;
     padding: 50px;
     border-radius: 10px;
     justify-content: space-between;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);;
 }
 
 hr{
@@ -46,7 +47,25 @@ h4{
     gap: 10px;
 }
 
-.buttonCan, .buttonSave {
+.buttonCan {
+    color: #333;
+    background-color: #FFD900;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2)  ;
+    transition: background-color 0.3s ease;
+}
+
+.buttonCan:hover {
+    background-color: #e6c200;
+    color: black;
+}
+
+
+ .buttonSave {
     color: rgb(7, 7, 1);
     background-color: #FFD900;
     border: none;
@@ -54,6 +73,12 @@ h4{
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2)  ;
+    transition: background-color 0.3s ease;
+}
+
+.buttonSave:hover {
+    background-color: #e6c200;
+    color: black;
 }
 
 .form{
@@ -74,11 +99,61 @@ input, select {
       width: 100%;
       padding: 10px;
       margin: 10px 0 20px;
+      background-color: #f6f6f6;
       border: 1px solid #ccc;
       border-radius: 5px;
 }
 
+#picTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background-color: #fff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
 
+#picTable thead {
+    background-color: #FFD900;
+}
+
+#picTable thead th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+}
+
+#picTable tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+
+#picTable tbody td {
+    padding: 15px;
+    color: #333;
+}
+
+#picTable button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#picTable button[name="edit_btn"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#picTable button[name="delete_btn"] {
+    background-color: #f44336;
+    color: white;
+}
 
 
 

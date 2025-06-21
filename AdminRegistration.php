@@ -9,7 +9,7 @@
 </head>
 <body>
     <?php 
-    include 'connect.php'; 
+    include 'config/config.php'; 
     include 'Header.php';
 
             //delete
@@ -91,7 +91,7 @@
         <div class="header-section">
             <h2 class="generals">GENERALS</h2>
             <div class="button-group">
-                <button type="reset" class="buttonCan" >Cancel</button>
+                <a href="AdminRegistration.php" class="buttonCan" style="text-decoration: none; display: inline-block;">Cancel</a>
                 <button type="submit" class="buttonSave" name="save_btn" >Save Information</button>
             </div>
         </div>
