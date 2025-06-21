@@ -15,8 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $company = $_POST['company'] ?? '';
     $appid = isset($_POST['appid']) ? (int) $_POST['appid'] : 0;
-    if ($appid <= 0) {
-        echo "❌ Application ID is missing or invalid.";
+    
+    // Protect: if already sent any email for this app, block
+    $check = $conn->prepare("SELECT App_Status FROM student_application WHERE ApplicationID = ?");
+    $check->bind_param("i", $appid);
+    $check->execute();
+    $statusResult = $check->get_result();
+
+    if ($statusRow = $statusResult->fetch_assoc()) {
+        $currentStatus = $statusRow['App_Status'];
+        if (in_array($currentStatus, ['Offered', 'Rejected', 'Interview'])) {
+            echo "❌ An email has already been sent for this application ($currentStatus).";
+            exit;
+        }
+    } else {
+        echo "❌ Invalid Application ID.";
         exit;
     }
 
@@ -69,19 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Send the email
             $mail->send();
-            echo "Internship rejection email sent to $email.";
+            echo "✅ Internship rejection email sent to $email.";
 
             // Update application status in database
             $stmt = $conn->prepare("UPDATE student_application SET App_Status = 'Rejected' WHERE ApplicationID = ?");
             $stmt->bind_param("i", $appid);
             $stmt->execute();
-
         } 
         catch (Exception $e) {
-            echo "Failed to send email. Mailer Error: {$mail->ErrorInfo}";
+            echo "❌ Failed to send email. Mailer Error: {$mail->ErrorInfo}";
         }
     } else {
-        echo "Student not found for Application ID: $appid";
+        echo "❌ Student not found for Application ID: $appid";
     }
 }
 ?>
