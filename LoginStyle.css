@@ -10,7 +10,7 @@ body{
     display:flex;
     align-items: center;
     min-height: 100vh;
-    background: url('background.png') no-repeat;
+    background: url('image/background.png') no-repeat;
     background-size: cover;
     background-position: center;
 }
