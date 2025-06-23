@@ -154,112 +154,161 @@
   </style>
 </head>
 <body>
-<?php include("UserHeader.php"); ?>
+<?php
+session_start();
+include("UserHeader.php");
+include("config/config.php");
 
-<div class="content">
-  <div class="box">
-    <h3>Resume</h3>
-    <div class="upload-section">
-      <label>Upload your resume to create and strengthen your profile.</label>
-      <div class="resume-box">
-        <label for="resume" class="custom-upload">Upload</label>
-        <input type="file" id="resume" name="resume" accept=".pdf">
+if (!isset($_SESSION['studentID'])) {
+  die("Access denied.");
+}
+
+$studentID = $_SESSION['studentID'];
+
+// Fetch student details
+$sql = "SELECT * FROM student WHERE StudentID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $studentID);
+$stmt->execute();
+$result = $stmt->get_result();
+$student = $result->fetch_assoc();
+$stmt->close();
+?>
+
+<form action="save_profile.php" method="POST" enctype="multipart/form-data">
+  <div class="content">
+    <div class="box">
+      <h3>Resume</h3>
+      <div class="upload-section">
+        <label>Upload your resume to create and strengthen your profile.</label>
+        <div class="resume-box">
+          <label for="resume" class="custom-upload">Upload</label>
+          <input type="file" id="resume" name="resume" accept=".pdf">
+        </div>
+        <?php if (!empty($student['Stud_ResumePath'])): ?>
+          <p style="margin-top: 10px;">Uploaded: <a href="<?= $student['Stud_ResumePath'] ?>" target="_blank">View</a></p>
+        <?php endif; ?>
       </div>
-</div>
 
-    <h3 style="margin-top: 30px;">Skills</h3>
-    <p>Add your skills to make your profile more valuable.</p>
-    <div class="input-group">
-      <input type="text" id="skillInput" placeholder="e.g. Creative">
-      <button class="add-skill-btn" onclick="addSkill()">Add Skills</button>
+      <h3 style="margin-top: 30px;">Skills</h3>
+      <p>Add your skills to make your profile more valuable.</p>
+      <div class="input-group">
+        <input type="text" id="skillInput" placeholder="e.g. Creative">
+        <button class="add-skill-btn" type="button" onclick="addSkill()">Add Skills</button>
+      </div>
+      <div class="skills-list" id="skillsList">
+        <?php
+        $skills = explode(',', $student['Stud_Skills'] ?? '');
+        $i = 1;
+        foreach ($skills as $skill) {
+          $trim = trim($skill);
+          if ($trim) {
+            echo "<div class='tag'>{$i}. {$trim} <button onclick='this.parentElement.remove(); renumberSkills();'>&times;</button></div>";
+            $i++;
+          }
+        }
+        ?>
+      </div>
     </div>
-    <div class="skills-list" id="skillsList">
-      <div class="tag">1. Quick to adapt <button onclick="this.parentElement.remove()">&times;</button></div>
-      <div class="tag">2. Expert in UI <button onclick="this.parentElement.remove()">&times;</button></div>
+
+    <!-- RIGHT BOX -->
+    <div class="box">
+      <div class="section-title">Job Preferences</div>
+
+      <h4>Preferred Location</h4>
+      <input type="text" id="locationInput">
+      <button class="save-btn" type="button" onclick="addLocation()">Save</button>
+
+      <div class="locations-list" id="locationsList">
+        <?php
+        $locations = explode(',', $student['Pref_Location'] ?? '');
+        $i = 1;
+        foreach ($locations as $loc) {
+          $trim = trim($loc);
+          if ($trim) {
+            echo "<div class='tag'>{$i}. {$trim} <button onclick='this.parentElement.remove(); renumberLocations();'>&times;</button></div>";
+            $i++;
+          }
+        }
+        ?>
+      </div>
+
+      <h4 style="margin-top: 30px;">Preferred Allowance / Salary</h4>
+      <div class="salary-section">
+        <input type="number" name="allowance" placeholder="500" value="<?= $student['Preferred_Allowance'] ?? '' ?>">
+        <select name="allowance_type">
+          <option value="Monthly" <?= ($student['Allowance_Type'] ?? '') == 'Monthly' ? 'selected' : '' ?>>Monthly</option>
+          <option value="Weekly" <?= ($student['Allowance_Type'] ?? '') == 'Weekly' ? 'selected' : '' ?>>Weekly</option>
+        </select>
+        <button class="save-btn" type="submit">Save</button>
+      </div>
     </div>
   </div>
 
-  <!-- RIGHT SIDE BOX: Job Preferences (Title inside the box) -->
-  <div class="box">
-    <div class="section-title">Job Preferences</div>
+  <!-- Hidden fields to send skills and locations -->
+  <input type="hidden" name="skills" id="skillsHidden">
+  <input type="hidden" name="locations" id="locationsHidden">
+</form>
 
-    <h4>Preferred Location</h4>
-    <input type="text" id="locationInput">
-    <button class="save-btn" onclick="addLocation()">Save</button>
-
-    <div class="locations-list" id="locationsList">
-      <div class="tag">1. Hulu Langat, Selangor <button onclick="this.parentElement.remove()">&times;</button></div>
-      <div class="tag">2. Seremban, Negeri Sembilan <button onclick="this.parentElement.remove()">&times;</button></div>
-    </div>
-
-    <h4 style="margin-top: 30px;">Preferred Allowance / Salary</h4>
-    <div class="salary-section">
-      <input type="number" placeholder="500">
-      <select>
-        <option>Monthly</option>
-        <option>Weekly</option>
-      </select>
-      <button class="save-btn">Save</button>
-      <button class="edit-btn">Edit</button>
-    </div>
-  </div>
-</div>
 
 
   <script>
-    function addSkill() {
-        const skillInput = document.getElementById('skillInput');
-        const skillsList = document.getElementById('skillsList');
-        
-        if (skillInput.value.trim() !== '') {
-            const currentSkills = skillsList.getElementsByClassName('tag').length;
-            const skillNumber = currentSkills + 1;
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `${skillNumber}. ${skillInput.value} <button onclick="this.parentElement.remove(); renumberSkills();">&times;</button>`;
-            skillsList.appendChild(tag);
-            skillInput.value = '';
-        }
+  function addSkill() {
+    const skillInput = document.getElementById('skillInput');
+    const skillsList = document.getElementById('skillsList');
+    if (skillInput.value.trim() !== '') {
+      const count = skillsList.getElementsByClassName('tag').length + 1;
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.innerHTML = `${count}. ${skillInput.value} <button onclick="this.parentElement.remove(); renumberSkills();">&times;</button>`;
+      skillsList.appendChild(tag);
+      skillInput.value = '';
     }
-    
-    function renumberSkills() {
-        const tags = document.querySelectorAll('#skillsList .tag');
-        tags.forEach((tag, index) => {
-            const text = tag.innerText.replace(/\d+\.\s/, ''); // Remove existing number
-            const button = tag.querySelector('button');
-            tag.innerHTML = `${index + 1}. ${text}`;
-            tag.appendChild(button); // Re-append the remove button
-            });
-        }
+  }
 
+  function renumberSkills() {
+    const tags = document.querySelectorAll('#skillsList .tag');
+    tags.forEach((tag, i) => {
+      const text = tag.innerText.replace(/\d+\.\s/, '').trim();
+      const button = tag.querySelector('button');
+      tag.innerHTML = `${i + 1}. ${text}`;
+      tag.appendChild(button);
+    });
+  }
 
-    function addLocation() {
-        const locationInput = document.getElementById('locationInput');
-        const locationsList = document.getElementById('locationsList');
-
-        if (locationInput.value.trim() !== '') {
-            const currentLocations = locationsList.getElementsByClassName('tag').length;
-            const locationNumber = currentLocations + 1;
-            
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `${locationNumber}. ${locationInput.value} <button onclick="this.parentElement.remove(); renumberLocations();">&times;</button>`;
-            locationsList.appendChild(tag);
-
-            locationInput.value = '';
-        }
+  function addLocation() {
+    const locationInput = document.getElementById('locationInput');
+    const locationsList = document.getElementById('locationsList');
+    if (locationInput.value.trim() !== '') {
+      const count = locationsList.getElementsByClassName('tag').length + 1;
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.innerHTML = `${count}. ${locationInput.value} <button onclick="this.parentElement.remove(); renumberLocations();">&times;</button>`;
+      locationsList.appendChild(tag);
+      locationInput.value = '';
     }
-    
-    function renumberLocations() {
-        const tags = document.querySelectorAll('#locationsList .tag');
-        tags.forEach((tag, index) => {
-            const text = tag.innerText.replace(/\d+\.\s/, ''); // Remove existing number
-            const button = tag.querySelector('button');
-            tag.innerHTML = `${index + 1}. ${text}`;
-            tag.appendChild(button); // Re-append the remove button
-            });
-}
+  }
 
-  </script>
+  function renumberLocations() {
+    const tags = document.querySelectorAll('#locationsList .tag');
+    tags.forEach((tag, i) => {
+      const text = tag.innerText.replace(/\d+\.\s/, '').trim();
+      const button = tag.querySelector('button');
+      tag.innerHTML = `${i + 1}. ${text}`;
+      tag.appendChild(button);
+    });
+  }
+
+  // Before form submit, gather skill/location values
+  document.querySelector("form").addEventListener("submit", function () {
+    const skills = Array.from(document.querySelectorAll("#skillsList .tag"))
+      .map(tag => tag.innerText.replace(/\d+\.\s/, '').trim());
+    document.getElementById("skillsHidden").value = skills.join(",");
+
+    const locations = Array.from(document.querySelectorAll("#locationsList .tag"))
+      .map(tag => tag.innerText.replace(/\d+\.\s/, '').trim());
+    document.getElementById("locationsHidden").value = locations.join(",");
+  });
+</script>
 </body>
 </html>
