@@ -206,6 +206,7 @@ else {
 
                 echo "<td>";
                 if ($status === 'Offered') {
+                    echo "<a href='send_offer_email.php?appid={$row['ApplicationID']}' class='download-offer-btn'>Download Offer Letter</a><br>";
                     echo "<form method='POST' action='respondOffer.php'>
                             <input type='hidden' name='applicationID' value='{$row['ApplicationID']}'>
                             <button type='submit' name='response' value='Accepted' class='accept-btn'>Accept</button>
