@@ -2,9 +2,10 @@
 session_start();
 include 'config/config.php';
 
-// Check if student is logged in
+//kalau tak log in tak boleh masuk
 if (!isset($_SESSION['studentID'])) {
     echo "Student not logged in.";
+    header("Location: login.html");
     exit;
 }
 
@@ -13,7 +14,7 @@ include 'UserHeader.php';
 $studentID = $_SESSION['studentID'];
 $selectedAppID = $_GET['app'] ?? null;
 
-// Get all applications by the student
+//ambik maklumat application
 $sql = "SELECT sa.ApplicationID, sa.App_Date, sa.App_Status, il.Int_Position, il.Int_City, il.Int_State 
         FROM student_application sa 
         JOIN intern_listings il ON sa.InternshipID = il.InternshipID 
@@ -146,7 +147,7 @@ function getCurrentStageClass($status, $stageName) {
 <body>
 
 <?php
-// Display selected application progress
+//progress untuk application yg diclick
 if ($selectedAppID) {
     foreach ($allRows as $row) {
         if ($row['ApplicationID'] == $selectedAppID) {
