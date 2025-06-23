@@ -1,3 +1,8 @@
+<?php
+include("UserHeader.php");
+include("config/config.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,6 +32,7 @@
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
+      justify-content: space-between;
     }
 
     .job-card {
@@ -35,6 +41,7 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
       padding: 20px;
       width: calc(50% - 10px);
+      box-sizing: border-box;
     }
 
     .job-card h3 {
@@ -65,29 +72,23 @@
 </head>
 <body>
 
-<?php include("UserHeader.php"); ?>
-
 <div class="search-container">
-
-  <!-- Search Bar Centered -->
+  <!-- Search Form -->
   <form method="GET">
     <div style="text-align: center; margin-bottom: 20px;">
       <input type="text" name="keyword" placeholder="🔍 Search Internship"
-             value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>"
+             value="<?= isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>"
              style="width: 60%; max-width: 600px;">
     </div>
 
     <!-- Filter Options -->
     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-
-      <!-- Program Type -->
       <select name="program_type" id="program_type" onchange="updateProgramOptions()">
         <option value="">Program Type</option>
-        <option value="Diploma" <?= (isset($_GET['program_type']) && $_GET['program_type'] == 'Diploma') ? 'selected' : '' ?>>Diploma</option>
-        <option value="Degree" <?= (isset($_GET['program_type']) && $_GET['program_type'] == 'Degree') ? 'selected' : '' ?>>Degree</option>
+        <option value="Diploma" <?= ($_GET['program_type'] ?? '') == 'Diploma' ? 'selected' : '' ?>>Diploma</option>
+        <option value="Degree" <?= ($_GET['program_type'] ?? '') == 'Degree' ? 'selected' : '' ?>>Degree</option>
       </select>
 
-      <!-- Program -->
       <select name="program_name" id="program_name">
         <option value="">Program</option>
         <?php if (isset($_GET['program_name'])): ?>
@@ -95,19 +96,17 @@
         <?php endif; ?>
       </select>
 
-      <!-- Location (State) -->
       <select name="location" id="location" onchange="updateAreaOptions()">
         <option value="">Location</option>
         <?php
         $states = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Penang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya'];
         foreach ($states as $state) {
-          $selected = (isset($_GET['location']) && $_GET['location'] == $state) ? 'selected' : '';
+          $selected = ($_GET['location'] ?? '') == $state ? 'selected' : '';
           echo "<option value=\"$state\" $selected>$state</option>";
         }
         ?>
       </select>
 
-      <!-- Area -->
       <select name="area" id="area">
         <option value="">Area</option>
         <?php if (isset($_GET['area'])): ?>
@@ -115,20 +114,18 @@
         <?php endif; ?>
       </select>
 
-      <!-- Industry -->
       <select name="industry">
         <option value="">Industry</option>
         <?php
         $industries = ['Information Technology', 'Software Engineering', 'Administrative', 'Maintenance'];
         foreach ($industries as $ind) {
-          $selected = (isset($_GET['industry']) && $_GET['industry'] == $ind) ? 'selected' : '';
+          $selected = ($_GET['industry'] ?? '') == $ind ? 'selected' : '';
           echo "<option value=\"$ind\" $selected>$ind</option>";
         }
         ?>
       </select>
     </div>
 
-    <!-- Search Button -->
     <div style="text-align: center;">
       <button type="submit" class="apply-btn">Search</button>
     </div>
@@ -137,71 +134,82 @@
   <!-- Job Listings -->
   <div class="job-cards">
     <?php
-    $jobs = [
-      [
-        "title" => "IT Support Intern",
-        "company" => "TechSys Solutions",
-        "location" => "Johor",
-        "area" => "Skudai",
-        "industry" => "Information Technology",
-        "desc" => "Provide technical support to users (hardware & software).",
-        "duration" => "🕒 Duration: 3 - 6 months",
-        "program" => "Diploma in Computer Science"
-      ],
-      [
-        "title" => "Backend Developer Intern",
-        "company" => "ByteWorks Inc.",
-        "location" => "Selangor",
-        "area" => "Petaling Jaya",
-        "industry" => "Software Engineering",
-        "desc" => "Work on API and database systems.",
-        "duration" => "🕒 Duration: 6 months",
-        "program" => "Bachelor in Computer Science (Database Management)"
-      ],
-      [
-        "title" => "Admin Assistant Intern",
-        "company" => "OfficePro Services",
-        "location" => "Selangor",
-        "area" => "Shah Alam",
-        "industry" => "Administrative",
-        "desc" => "Assist in clerical and office work.",
-        "duration" => "🕒 Duration: 3 months",
-        "program" => "Diploma in Computer Science"
-      ]
-    ];
+    $hasFilter = false;
+    $sql = "SELECT i.*, e.Comp_Name AS EmployerName 
+            FROM intern_listings i 
+            JOIN employer e ON i.EmployerID = e.EmployerID 
+            WHERE 1=1";
 
-    $keyword = isset($_GET['keyword']) ? strtolower(trim($_GET['keyword'])) : '';
-    $locFilter = $_GET['location'] ?? '';
-    $areaFilter = $_GET['area'] ?? '';
-    $industryFilter = $_GET['industry'] ?? '';
-    $programFilter = $_GET['program_name'] ?? '';
+    if (!empty($_GET['keyword'])) {
+      $kw = $conn->real_escape_string($_GET['keyword']);
+      $sql .= " AND (i.Int_Position LIKE '%$kw%' OR i.Int_Details LIKE '%$kw%')";
+      $hasFilter = true;
+    }
 
-    foreach ($jobs as $job) {
-      $combined = strtolower($job['title'] . ' ' . $job['company'] . ' ' . $job['desc']);
-      $match = true;
+    if (!empty($_GET['location'])) {
+      $loc = $conn->real_escape_string($_GET['location']);
+      $sql .= " AND i.Int_State = '$loc'";
+      $hasFilter = true;
+    }
 
-      if ($keyword && strpos($combined, $keyword) === false) $match = false;
-      if ($locFilter && $job['location'] !== $locFilter) $match = false;
-      if ($areaFilter && $job['area'] !== $areaFilter) $match = false;
-      if ($industryFilter && $job['industry'] !== $industryFilter) $match = false;
-      if ($programFilter && $job['program'] !== $programFilter) $match = false;
+    if (!empty($_GET['area'])) {
+      $area = $conn->real_escape_string($_GET['area']);
+      $sql .= " AND i.Int_City LIKE '%$area%'";
+      $hasFilter = true;
+    }
 
-      if ($match) {
-        echo '<div class="job-card">';
-        echo "<h3>{$job['title']}</h3>";
-        echo "<p><strong>{$job['company']}</strong></p>";
-        echo "<p class='location'>📍 {$job['area']}, {$job['location']}</p>";
-        echo "<p class='duration'>{$job['duration']}</p>";
-        echo "<p>{$job['desc']}</p>";
-        echo '<button class="apply-btn">Apply</button>';
-        echo '</div>';
+    if (!empty($_GET['industry'])) {
+      $industry = $conn->real_escape_string($_GET['industry']);
+      $sql .= " AND i.Int_Industry = '$industry'";
+      $hasFilter = true;
+    }
+
+    if (!empty($_GET['program_name'])) {
+      $prog = $conn->real_escape_string($_GET['program_name']);
+      $sql .= " AND i.Int_Programme = '$prog'";
+      $hasFilter = true;
+    }
+
+    // If no filter is applied, show latest 6
+    if (!$hasFilter) {
+      $sql .= " ORDER BY i.InternshipID DESC LIMIT 6";
+    }
+
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+      echo '<div class="job-card">';
+echo '<h3>' . htmlspecialchars($row['Int_Position']) . '</h3>';
+
+echo '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
+
+echo '<div>';
+echo '<p><strong>' . htmlspecialchars($row['EmployerName']) . '</strong></p>';
+echo '<p>' . htmlspecialchars($row['Int_Programme']) . '</p>';
+echo '</div>';
+
+echo '<div style="text-align: right;">';
+echo '<p class="location" style="margin: 0;">📍 ' . htmlspecialchars($row['Int_State']) . ', ' . htmlspecialchars($row['Int_City']) . '</p>';
+echo '<p class="duration" style="margin: 4px 0;">🕒 ' . htmlspecialchars($row['Int_Duration'] ?? 'Duration not set') . '</p>';
+echo '<p style="font-weight: bold; color: #2c3e50; margin: 4px 0;">RM ' . number_format($row['Int_Allowance'], 2) . '</p>';
+echo '</div>';
+
+echo '</div>'; // close flex container
+
+$details = strip_tags($row['Int_Details']); // Remove HTML tags if any
+$shortDetails = strlen($details) > 150 ? substr($details, 0, 150) . '...' : $details;
+echo '<p>' . htmlspecialchars($shortDetails) . '</p>';
+echo '<a href="intern_detail.php?id=' . $row['InternshipID'] . '" class="apply-btn" style="display: inline-block; text-decoration: none; color: black;">View Detail</a>';
+echo '</div>';
       }
+    } else {
+      echo "<p>No internships found.</p>";
     }
     ?>
   </div>
 </div>
 
-<!-- JavaScript Dropdown Updates -->
 <script>
   const areaOptions = {
     "Johor": ["Johor Bahru", "Batu Pahat", "Kluang", "Muar", "Segamat", "Skudai"],
@@ -226,12 +234,12 @@
     const state = document.getElementById("location").value;
     const areaSelect = document.getElementById("area");
     areaSelect.innerHTML = '<option value="">Area</option>';
-    if (state && areaOptions[state]) {
+    if (areaOptions[state]) {
       areaOptions[state].forEach(area => {
-        const option = document.createElement("option");
-        option.value = area;
-        option.text = area;
-        areaSelect.appendChild(option);
+        const opt = document.createElement("option");
+        opt.value = area;
+        opt.text = area;
+        areaSelect.appendChild(opt);
       });
     }
   }
@@ -248,14 +256,14 @@
 
   function updateProgramOptions() {
     const type = document.getElementById("program_type").value;
-    const programSelect = document.getElementById("program_name");
-    programSelect.innerHTML = '<option value="">Program</option>';
-    if (type && programOptions[type]) {
-      programOptions[type].forEach(program => {
-        const option = document.createElement("option");
-        option.value = program;
-        option.text = program;
-        programSelect.appendChild(option);
+    const progSelect = document.getElementById("program_name");
+    progSelect.innerHTML = '<option value="">Program</option>';
+    if (programOptions[type]) {
+      programOptions[type].forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p;
+        opt.text = p;
+        progSelect.appendChild(opt);
       });
     }
   }
