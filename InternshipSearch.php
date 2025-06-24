@@ -214,7 +214,7 @@ echo '</div>';
     "Melaka": ["Melaka Tengah", "Alor Gajah", "Jasin"],
     "Negeri Sembilan": ["Seremban", "Port Dickson", "Nilai"],
     "Pahang": ["Kuantan", "Temerloh", "Bentong", "Cameron Highlands"],
-    "Penang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
+    "Pulau Pinang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
     "Perak": ["Ipoh", "Taiping", "Teluk Intan", "Lumut"],
     "Perlis": ["Kangar", "Arau"],
     "Sabah": ["Kota Kinabalu", "Tawau", "Sandakan", "Lahad Datu"],
