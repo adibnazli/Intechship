@@ -10,7 +10,20 @@ if (!isset($_SESSION['studentID'])) {
 }
 
 include 'UserHeader.php';
-
+// progressStudent.php - Add after session_start()
+if (isset($_SESSION['response_status'])) {
+    $status = $_SESSION['response_status'];
+    $message = "You've successfully $status the offer!";
+    
+    if (isset($_SESSION['email_error'])) {
+        $message .= " (Email notification failed)";
+    }
+    
+    echo "<script>alert('$message');</script>";
+    
+    unset($_SESSION['response_status']);
+    unset($_SESSION['email_error']);
+}
 $studentID = $_SESSION['studentID'];
 $selectedAppID = $_GET['app'] ?? null;
 
@@ -207,7 +220,6 @@ else {
 
                 echo "<td>";
                 if ($status === 'Offered') {
-                    echo "<a href='send_offer_email.php?appid={$row['ApplicationID']}' class='download-offer-btn'>Download Offer Letter</a><br>";
                     echo "<form method='POST' action='respondOffer.php'>
                             <input type='hidden' name='applicationID' value='{$row['ApplicationID']}'>
                             <button type='submit' name='response' value='Accepted' class='accept-btn'>Accept</button>
