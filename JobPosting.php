@@ -90,20 +90,33 @@ include("employerheader.php");
     }
 
   </style>
+  <script>
+    function validateForm() {
+      const checkboxes = document.querySelectorAll('input[name="programme[]"]');
+      const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+      if (!isChecked) {
+        alert("Please select at least one programme.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+
 </head>
 <body>
 <h1>Job Posting</h1>
 <div class="container">
   <h3>Please fill in all fields and click Submit.</h3>
-  <form method="post" action="joblist.php">
+  <form method="post" action="joblist.php" onsubmit="return validateForm()">
 
     <label for="job_title">Job Title</label>
-    <input type="text" name="job_title" id="job_title" placeholder="Job Title">
+    <input type="text" name="job_title" id="job_title" placeholder="Job Title" required>
 
     <div class="form-row">
       <div>
         <label for="state">Location</label>
-        <select name="state" id="state">
+        <select name="state" id="state" required>
           <option value="">-- Select a State --</option>
           <option value="Sabah">Sabah</option>
           <option value="Sarawak">Sarawak</option>
@@ -122,7 +135,7 @@ include("employerheader.php");
       </div>
       <div>
         <label for="city">&nbsp;</label>
-        <input type="text" name="city" id="city" placeholder="City">
+        <input type="text" name="city" id="city" placeholder="City" required>
       </div>
     </div>
 
@@ -149,12 +162,12 @@ include("employerheader.php");
 
 
     <label for="allowance">Monthly Allowance (MYR)</label>
-    <input type="text" name="allowance" id="allowance" placeholder="e.g. 500">
+    <input type="text" name="allowance" id="allowance" placeholder="e.g. 500" required>
 
 
 
     <label for="job_details">Job Details</label>
-    <textarea name="job_details" id="job_details" placeholder="Describe the job..."></textarea>
+    <textarea name="job_details" id="job_details" placeholder="Describe the job..." required></textarea>
 
     <div class="button-group">
       <button type="reset" class="btn-cancel">Cancel</button>

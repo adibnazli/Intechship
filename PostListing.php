@@ -54,13 +54,23 @@ $result = $conn->query($sql);
 
     .nav-jobdesc ul {
       list-style: none;
-      padding-left: 35px;
+      padding-left: 25px;
       margin: 10px 0 0;
       display: flex;
       flex-direction: column;
       gap: 12px;
       font-size: 16px;
       color: #333;
+    }
+
+    .nav-jobdesc li {
+      display: flex;
+    }
+
+    .post-icon {
+      max-height: 20px;
+      padding-right: 16px;
+      margin-top: 2px;
     }
 
     .threedots-wrapper {
@@ -125,7 +135,7 @@ $result = $conn->query($sql);
           } elseif ($interval->d > 0) {
               $postedAgo = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
           } else {
-              $postedAgo = 'Today';
+              $postedAgo = 'today';
           }
         ?>
 
@@ -134,11 +144,11 @@ $result = $conn->query($sql);
             <h2><?= htmlspecialchars($row['Int_Position']) ?></h2>
             <nav class="nav-jobdesc">
               <ul>
-                <li><?= htmlspecialchars($row['Comp_Name']); ?></li>
-                <li><?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></li>
-                <li><?= htmlspecialchars($row['Int_Programme']) ?></li>
-                <li>RM<?= htmlspecialchars($row['Int_Allowance']) ?>/month</li>
-                <li><?= $postedAgo ?></li>
+                <li><img src="image/building.png" class="post-icon"><?= htmlspecialchars($row['Comp_Name']); ?></li>
+                <li><img src="image/location.png" class="post-icon"><?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></li>
+                <li><img src="image/reading.png" class="post-icon"><?= htmlspecialchars($row['Int_Programme']) ?></li>
+                <li><img src="image/dollar-bill.png" class="post-icon">RM<?= htmlspecialchars($row['Int_Allowance']) ?> per month</li>
+                <li><img src="image/stopwatch.png" class="post-icon">Posted <?= $postedAgo ?></li>
               </ul>
             </nav>
           </div>

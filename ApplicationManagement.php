@@ -135,6 +135,16 @@ $result = $conn->query($sql);
       color: #000;
     }
 
+    .accepted {
+      background-color:rgb(95, 255, 95);
+      color: #000;
+    }
+
+    .declined {
+      background-color: #f66;
+      color: #000;
+    }
+
     .application-received {
       background-color: #FFD900;
       padding: 3px 20px;
