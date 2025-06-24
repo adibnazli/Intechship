@@ -14,13 +14,13 @@ include 'UserHeader.php';
 if (isset($_SESSION['response_status'])) {
     $status = $_SESSION['response_status'];
     $message = "You've successfully $status the offer!";
-    
+
     if (isset($_SESSION['email_error'])) {
         $message .= " (Email notification failed)";
     }
-    
+
     echo "<script>alert('$message');</script>";
-    
+
     unset($_SESSION['response_status']);
     unset($_SESSION['email_error']);
 }
@@ -57,8 +57,9 @@ function getCurrentStageClass($status, $stageName) {
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f6f6f6;
+            margin: 0;
         }
 
         .progress-container {
@@ -97,46 +98,55 @@ function getCurrentStageClass($status, $stageName) {
             font-weight: bold;
         }
 
-        table {
-            width: 95%;
-            border-collapse: collapse;
-            margin: 30px auto;
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
             background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
         th, td {
-            padding: 12px;
-            border: 1px solid #333;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            
+            text-align: left;
+            padding: 14px;
         }
 
         th {
-            background-color: #FFD900;;
-            font-weight: bold;
+            font-weight: normal;
+            color: #666666; 
+            border-bottom: 2px solid #ccc;
+            padding-left: 30px;
         }
 
-        tr:hover {
-            background-color: #f9f9f9;
-            cursor: pointer;
+        td {
+            vertical-align: middle;
+        }
+
+        tr:not(:last-child) {
+            border-bottom: 1px solid #ddd;
         }
 
         .status-pill {
+            font-size: 13px;
             display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 8px 14px;
+            border-radius: 8px;
             font-weight: bold;
             color: black;
-            background-color: #ccc;
         }
 
-        .status-pending { background-color: #f1c40f; }
-        .status-review { background-color: #3498db; }
-        .status-interview { background-color: #9b59b6; }
-        .status-offered { background-color: #2ecc71; }
+        .status-pending { background-color: rgb(86, 235, 255); }
+        .status-review { background-color: #FFD900; }
+        .status-interview { background-color: rgb(255, 177, 9); }
+        .status-offered { background-color: rgb(95, 255, 95); }
         .status-accepted { background-color: #27ae60; }
-        .status-declined, .status-rejected { background-color: #e74c3c; }
+        .status-declined, .status-rejected { background-color: #f66; }
 
         .accept-btn {
             background-color: green;
@@ -160,7 +170,6 @@ function getCurrentStageClass($status, $stageName) {
 <body>
 
 <?php
-//progress untuk application yg diclick
 if ($selectedAppID) {
     foreach ($allRows as $row) {
         if ($row['ApplicationID'] == $selectedAppID) {
@@ -178,68 +187,67 @@ if ($selectedAppID) {
             break;
         }
     }
-}
-else {
+} else {
     echo "<div class='progress-container'><h3>No application selected. Click on a row to view progress.</h3></div>";
 }
-
 ?>
 
-<h2 style="text-align: center;">All Applications</h2>
+<h2 style="text-align: center; margin-top: 50px;">All Applications</h2>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Internship Offer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if (count($allRows) > 0) {
+                foreach ($allRows as $row) {
+                    $status = $row['App_Status'];
+                    $statusClass = match($status) {
+                        'Pending' => 'status-pill status-pending',
+                        'In Review' => 'status-pill status-review',
+                        'Interview' => 'status-pill status-interview',
+                        'Offered' => 'status-pill status-offered',
+                        'Accepted' => 'status-pill status-accepted',
+                        'Declined', 'Rejected' => 'status-pill status-declined',
+                        default => 'status-pill'
+                    };
 
-<table>
-    <thead>
-        <tr>
-            <th>Position</th>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Status</th>
-            <th>Internship Offer</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        if (count($allRows) > 0) {
-            foreach ($allRows as $row) {
-                $status = $row['App_Status'];
-                $statusClass = match($status) {
-                    'Pending' => 'status-pill status-pending',
-                    'In Review' => 'status-pill status-review',
-                    'Interview' => 'status-pill status-interview',
-                    'Offered' => 'status-pill status-offered',
-                    'Accepted' => 'status-pill status-accepted',
-                    'Declined', 'Rejected' => 'status-pill status-declined',
-                    default => 'status-pill'
-                };
+                    echo "<tr onclick=\"window.location='progressStudent.php?app={$row['ApplicationID']}'\">";
+                    echo "<td>" . htmlspecialchars($row['Int_Position']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['App_Date']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Int_City']) . ", " . htmlspecialchars($row['Int_State']) . "</td>";
+                    echo "<td><span class='{$statusClass}'>{$status}</span></td>";
 
-                echo "<tr onclick=\"window.location='progressStudent.php?app={$row['ApplicationID']}'\">";
-                echo "<td>" . htmlspecialchars($row['Int_Position']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['App_Date']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['Int_City']) . ", " . htmlspecialchars($row['Int_State']) . "</td>";
-                echo "<td><span class='{$statusClass}'>{$status}</span></td>";
-
-                echo "<td>";
-                if ($status === 'Offered') {
-                    echo "<form method='POST' action='respondOffer.php'>
-                            <input type='hidden' name='applicationID' value='{$row['ApplicationID']}'>
-                            <button type='submit' name='response' value='Accepted' class='accept-btn'>Accept</button>
-                            <button type='submit' name='response' value='Declined' class='reject-btn'>Reject</button>
-                          </form>";
-                } elseif ($status === 'Accepted') {
-                    echo "<span class='status-pill status-accepted'>Accepted</span>";
-                } elseif ($status === 'Declined' || $status === 'Rejected') {
-                    echo "<span class='status-pill status-declined'>Declined</span>";
-                } else {
-                    echo "–";
+                    echo "<td style='text-align: center;'>";
+                    if ($status === 'Offered') {
+                        echo "<form method='POST' action='respondOffer.php'>
+                                <input type='hidden' name='applicationID' value='{$row['ApplicationID']}'>
+                                <button type='submit' name='response' value='Accepted' class='accept-btn'>Accept</button>
+                                <button type='submit' name='response' value='Declined' class='reject-btn'>Reject</button>
+                              </form>";
+                    } elseif ($status === 'Accepted') {
+                        echo "<span class='status-pill status-accepted'>Accepted</span>";
+                    } elseif ($status === 'Declined' || $status === 'Rejected') {
+                        echo "<span class='status-pill status-declined'>Declined</span>";
+                    } else {
+                        echo "<span>–</span>";
+                    }
+                    echo "</td></tr>";
                 }
-                echo "</td></tr>";
+            } else {
+                echo "<tr><td colspan='5' style='text-align:center;'>No applications found.</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='5'>No applications found.</td></tr>";
-        }
-        ?>
-    </tbody>
-</table>
+            ?>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
