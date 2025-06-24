@@ -51,7 +51,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
             {
                 // header("Location: admin_dashboard.php");
             } 
-            else if (str_ends_with($Email, '@employer.my')) 
+            else if (str_ends_with($Email, '@gmail.com')) 
             {
                 $_SESSION['EmployerID'] = $user['EmployerID'];
                 $_SESSION['Comp_Name'] = $user['Comp_Name'];
