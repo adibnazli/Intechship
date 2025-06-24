@@ -25,8 +25,11 @@ if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
     $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
 
     // Rename file to avoid conflict
-    $newFileName = "resume_" . $studentID . "_" . time() . "." . $fileExt;
-    $uploadPath = $uploadDir . $newFileName;
+   // Use original file name (with studentID prepended for uniqueness)
+$cleanFileName = preg_replace("/[^A-Za-z0-9_\-\.]/", '_', $fileName); // sanitize
+$newFileName = $studentID . "_" . $cleanFileName;
+$uploadPath = $uploadDir . $newFileName;
+
 
     if (move_uploaded_file($fileTmp, $uploadPath)) {
         $resumePath = $uploadPath;

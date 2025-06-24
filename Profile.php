@@ -185,9 +185,19 @@ $stmt->close();
           <label for="resume" class="custom-upload">Upload</label>
           <input type="file" id="resume" name="resume" accept=".pdf">
         </div>
-        <?php if (!empty($student['Stud_ResumePath'])): ?>
-          <p style="margin-top: 10px;">Uploaded: <a href="<?= $student['Stud_ResumePath'] ?>" target="_blank">View</a></p>
-        <?php endif; ?>
+       <?php
+  if (!empty($student['Stud_ResumePath'])):
+    $filePath = $student['Stud_ResumePath'];
+    $fileName = basename($filePath);
+?>
+  <p style="margin-top: 10px;">
+    Uploaded: <a href="<?= $filePath ?>" target="_blank"><?= $fileName ?></a>
+    |
+    <a href="delete_resume.php" onclick="return confirm('Are you sure you want to delete your resume?');" style="color:red;">Delete</a>
+  </p>
+<?php endif; ?>
+
+
       </div>
 
       <h3 style="margin-top: 30px;">Skills</h3>
@@ -217,7 +227,7 @@ $stmt->close();
 
       <h4>Preferred Location</h4>
       <input type="text" id="locationInput">
-      <button class="save-btn" type="button" onclick="addLocation()">Save</button>
+      <button class="save-btn" type="button" onclick="addLocation()">Add Locations</button>
 
       <div class="locations-list" id="locationsList">
         <?php
@@ -246,8 +256,12 @@ $stmt->close();
   </div>
 
   <!-- Hidden fields to send skills and locations -->
-  <input type="hidden" name="skills" id="skillsHidden">
-  <input type="hidden" name="locations" id="locationsHidden">
+  <!-- Hidden fields to send skills and locations -->
+<!-- Hidden fields to send skills and locations -->
+<input type="hidden" name="skills" id="skillsHidden">
+<input type="hidden" name="locations" id="locationsHidden">
+
+<input type="hidden" name="matric_no" value="<?= $student['Matric_No'] ?? '' ?>">
 </form>
 
 

@@ -1,7 +1,14 @@
 <?php
+session_start();
 include("UserHeader.php");
 include("config/config.php");
+
+// Access control: only logged-in students can access
+if (!isset($_SESSION['studentID'])) {
+    die("Access denied.");
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -114,16 +121,6 @@ include("config/config.php");
         <?php endif; ?>
       </select>
 
-      <select name="industry">
-        <option value="">Industry</option>
-        <?php
-        $industries = ['Information Technology', 'Software Engineering', 'Administrative', 'Maintenance'];
-        foreach ($industries as $ind) {
-          $selected = ($_GET['industry'] ?? '') == $ind ? 'selected' : '';
-          echo "<option value=\"$ind\" $selected>$ind</option>";
-        }
-        ?>
-      </select>
     </div>
 
     <div style="text-align: center;">
@@ -158,21 +155,21 @@ include("config/config.php");
       $hasFilter = true;
     }
 
-    if (!empty($_GET['industry'])) {
-      $industry = $conn->real_escape_string($_GET['industry']);
-      $sql .= " AND i.Int_Industry = '$industry'";
-      $hasFilter = true;
-    }
-
     if (!empty($_GET['program_name'])) {
       $prog = $conn->real_escape_string($_GET['program_name']);
       $sql .= " AND i.Int_Programme = '$prog'";
       $hasFilter = true;
     }
 
-    // If no filter is applied, show latest 6
+    if (!empty($_GET['program_type'])) {
+  $type = $conn->real_escape_string($_GET['program_type']);
+  $sql .= " AND i.Int_Qualification = '$type'";
+  $hasFilter = true;
+}
+
+    // If no filter is applied, show latest 10
     if (!$hasFilter) {
-      $sql .= " ORDER BY i.InternshipID DESC LIMIT 6";
+      $sql .= " ORDER BY i.InternshipID DESC LIMIT 10";
     }
 
     $result = $conn->query($sql);
@@ -191,7 +188,6 @@ echo '</div>';
 
 echo '<div style="text-align: right;">';
 echo '<p class="location" style="margin: 0;">📍 ' . htmlspecialchars($row['Int_State']) . ', ' . htmlspecialchars($row['Int_City']) . '</p>';
-echo '<p class="duration" style="margin: 4px 0;">🕒 ' . htmlspecialchars($row['Int_Duration'] ?? 'Duration not set') . '</p>';
 echo '<p style="font-weight: bold; color: #2c3e50; margin: 4px 0;">RM ' . number_format($row['Int_Allowance'], 2) . '</p>';
 echo '</div>';
 
@@ -245,12 +241,28 @@ echo '</div>';
   }
 
   const programOptions = {
-    "Diploma": ["Diploma in Computer Science"],
+    "Diploma": [
+      "Computer Science",
+      "Computer Science, Game Technology",
+      "Computer Science, Computer Security",
+      "Computer Science, Computer Networking",
+      "Computer Science, Software Development",
+      "Computer Science, Database Management",
+      "Computer Science, Interactive Media",
+      "Computer Science, Artificial Intelligence",
+      "Computer Science, Cloud Computing"
+  ],
+    
     "Degree": [
-      "Bachelor in Computer Science (Database Management)",
-      "Bachelor in Computer Science (Software Engineering)",
-      "Bachelor in Computer Science (AI & Data Science)",
-      "Bachelor in Computer Science (Cybersecurity)"
+      "Computer Science",
+      "Computer Science, Game Technology",
+      "Computer Science, Computer Security",
+      "Computer Science, Computer Networking",
+      "Computer Science, Software Development",
+      "Computer Science, Database Management",
+      "Computer Science, Interactive Media",
+      "Computer Science, Artificial Intelligence",
+      "Computer Science, Cloud Computing",
     ]
   };
 
