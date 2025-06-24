@@ -141,6 +141,20 @@ $selectedProgrammes = explode(',', $row['Int_Programme']);
       </div>
     </div>
 
+    <div>
+        <label for="qualification">Qualification</label>
+        <select name="qualification" id="qualification">
+          <option value="">-- Select a Level --</option>
+          <?php
+          $qualification = ["Diploma", "Degree"];
+          foreach ($qualification as $qualification) {
+              $selected = $row['Int_Qualification'] == $qualification ? 'selected' : '';
+              echo "<option value=\"$qualification\" $selected>$qualification</option>";
+          }
+          ?>
+        </select>
+      </div>
+
     <label for="programme">Programme</label>
     <div style="border: 1px solid #ccc; border-radius: 8px; padding: 15px; background-color: #f2f2f2; margin-bottom: 20px;">
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">

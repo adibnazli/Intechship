@@ -16,7 +16,7 @@ $result = $conn->query($sql);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Employer Post Listings</title>
+  <title>Post Listings</title>
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -58,7 +58,7 @@ $result = $conn->query($sql);
       margin: 10px 0 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
       font-size: 16px;
       color: #333;
     }
@@ -146,7 +146,8 @@ $result = $conn->query($sql);
               <ul>
                 <li><img src="image/building.png" class="post-icon"><?= htmlspecialchars($row['Comp_Name']); ?></li>
                 <li><img src="image/location.png" class="post-icon"><?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></li>
-                <li><img src="image/reading.png" class="post-icon"><?= htmlspecialchars($row['Int_Programme']) ?></li>
+                <li><img src="image/reading.png" class="post-icon"><?= htmlspecialchars($row['Int_Qualification']); ?></li>
+                <li><img src="image/menu.png" class="post-icon"><?= htmlspecialchars($row['Int_Programme']) ?></li>
                 <li><img src="image/dollar-bill.png" class="post-icon">RM<?= htmlspecialchars($row['Int_Allowance']) ?> per month</li>
                 <li><img src="image/stopwatch.png" class="post-icon">Posted <?= $postedAgo ?></li>
               </ul>

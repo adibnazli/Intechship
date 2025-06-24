@@ -8,7 +8,7 @@ include("employerheader.php");
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Job Form</title>
+  <title>Job Posting</title>
   <style>
     body {
       font-family: Roboto, sans-serif;
@@ -90,19 +90,6 @@ include("employerheader.php");
     }
 
   </style>
-  <script>
-    function validateForm() {
-      const checkboxes = document.querySelectorAll('input[name="programme[]"]');
-      const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-
-      if (!isChecked) {
-        alert("Please select at least one programme.");
-        return false;
-      }
-      return true;
-    }
-  </script>
-
 </head>
 <body>
 <h1>Job Posting</h1>
@@ -139,7 +126,16 @@ include("employerheader.php");
       </div>
     </div>
 
-    <label for="programme">Programme</label>
+    <div>
+      <label for="qualification">Qualification</label>
+      <select name="qualification" id="qualification" required>
+          <option value="">-- Select a Level --</option>
+          <option value="Diploma">Diploma</option>
+          <option value="Degree">Degree</option>
+        </select>
+    </div>
+
+    <label for="programme">Field</label>
     <div style="
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -170,7 +166,7 @@ include("employerheader.php");
     <textarea name="job_details" id="job_details" placeholder="Describe the job..." required></textarea>
 
     <div class="button-group">
-      <button type="reset" class="btn-cancel">Cancel</button>
+      <button type="reset" class="btn-cancel" onclick="return confirmCancel()">Cancel</button>
       <button type="submit" class="btn-submit">Submit</button>
     </div>
 
@@ -180,6 +176,24 @@ include("employerheader.php");
 <?php
 include("footer.php");
 ?>
+<script>
+    // Function to ensure that the user choose at least 1 programme
+    function validateForm() {
+      const checkboxes = document.querySelectorAll('input[name="programme[]"]');
+      const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+      if (!isChecked) {
+        alert("Please select at least one programme.");
+        return false;
+      }
+      return true;
+    }
+
+    // Function to confirm user cancellation to avoid accidental data loss
+    function confirmCancel() {
+      return confirm("Are you sure you want to cancel? All entered data will be lost.");
+    }
+  </script>
 
 </body>
 </html>

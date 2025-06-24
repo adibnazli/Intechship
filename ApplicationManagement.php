@@ -25,7 +25,7 @@ $result = $conn->query($sql);
 
 <html>
 <head>
-<title></title>
+<title>Application Management</title>
 <style>
     body {
       font-family: 'Roboto', sans-serif;
