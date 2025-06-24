@@ -131,46 +131,55 @@ if (!isset($_SESSION['studentID'])) {
   <!-- Job Listings -->
   <div class="job-cards">
     <?php
-    $hasFilter = false;
-    $sql = "SELECT i.*, e.Comp_Name AS EmployerName 
-            FROM intern_listings i 
-            JOIN employer e ON i.EmployerID = e.EmployerID 
-            WHERE 1=1";
+    // 1. Pagination setup
+$limit = 10;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($page - 1) * $limit;
 
-    if (!empty($_GET['keyword'])) {
-      $kw = $conn->real_escape_string($_GET['keyword']);
-      $sql .= " AND (i.Int_Position LIKE '%$kw%' OR i.Int_Details LIKE '%$kw%')";
-      $hasFilter = true;
-    }
+// Count total results (excluding LIMIT)
+$countSql = "SELECT COUNT(*) AS total FROM intern_listings i 
+             JOIN employer e ON i.EmployerID = e.EmployerID 
+             WHERE 1=1";
 
-    if (!empty($_GET['location'])) {
-      $loc = $conn->real_escape_string($_GET['location']);
-      $sql .= " AND i.Int_State = '$loc'";
-      $hasFilter = true;
-    }
+$filterSql = ""; // Store filter conditions separately
 
-    if (!empty($_GET['area'])) {
-      $area = $conn->real_escape_string($_GET['area']);
-      $sql .= " AND i.Int_City LIKE '%$area%'";
-      $hasFilter = true;
-    }
-
-    if (!empty($_GET['program_name'])) {
-      $prog = $conn->real_escape_string($_GET['program_name']);
-      $sql .= " AND i.Int_Programme = '$prog'";
-      $hasFilter = true;
-    }
-
-    if (!empty($_GET['program_type'])) {
-  $type = $conn->real_escape_string($_GET['program_type']);
-  $sql .= " AND i.Int_Qualification = '$type'";
-  $hasFilter = true;
+if (!empty($_GET['keyword'])) {
+    $kw = $conn->real_escape_string($_GET['keyword']);
+    $filterSql .= " AND (i.Int_Position LIKE '%$kw%' OR i.Int_Details LIKE '%$kw%')";
 }
 
-    // If no filter is applied, show latest 10
-    if (!$hasFilter) {
-      $sql .= " ORDER BY i.InternshipID DESC LIMIT 10";
-    }
+if (!empty($_GET['location'])) {
+    $loc = $conn->real_escape_string($_GET['location']);
+    $filterSql .= " AND i.Int_State = '$loc'";
+}
+
+if (!empty($_GET['area'])) {
+    $area = $conn->real_escape_string($_GET['area']);
+    $filterSql .= " AND i.Int_City LIKE '%$area%'";
+}
+
+if (!empty($_GET['program_name'])) {
+    $prog = $conn->real_escape_string($_GET['program_name']);
+    $filterSql .= " AND i.Int_Programme = '$prog'";
+}
+
+if (!empty($_GET['program_type'])) {
+    $type = $conn->real_escape_string($_GET['program_type']);
+    $filterSql .= " AND i.Int_Qualification = '$type'";
+}
+
+$countResult = $conn->query($countSql . $filterSql);
+$totalRows = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRows / $limit);
+
+// Final listing query
+$sql = "SELECT i.*, e.Comp_Name AS EmployerName 
+        FROM intern_listings i 
+        JOIN employer e ON i.EmployerID = e.EmployerID 
+        WHERE 1=1 $filterSql 
+        ORDER BY i.InternshipID DESC 
+        LIMIT $limit OFFSET $offset";
+
 
     $result = $conn->query($sql);
 
@@ -191,7 +200,9 @@ echo '<p class="location" style="margin: 0;">📍 ' . htmlspecialchars($row['Int
 echo '<p style="font-weight: bold; color: #2c3e50; margin: 4px 0;">RM ' . number_format($row['Int_Allowance'], 2) . '</p>';
 echo '</div>';
 
-echo '</div>'; // close flex container
+echo '</div>'; 
+
+// close flex container
 
 $details = strip_tags($row['Int_Details']); // Remove HTML tags if any
 $shortDetails = strlen($details) > 150 ? substr($details, 0, 150) . '...' : $details;
@@ -204,6 +215,33 @@ echo '</div>';
     }
     ?>
   </div>
+  <?php if ($totalPages > 1): ?>
+<div style="text-align:center; margin-top: 30px;">
+  <?php
+    $baseUrl = strtok($_SERVER["REQUEST_URI"], '?');
+    parse_str($_SERVER['QUERY_STRING'], $params);
+
+    function createPageLink($p, $label) {
+        global $params, $baseUrl;
+        $params['page'] = $p;
+        $query = http_build_query($params);
+        return "<a href=\"$baseUrl?$query\" style=\"margin: 0 8px; text-decoration:none; color: #333; font-weight:" . ($p == ($_GET['page'] ?? 1) ? 'bold' : 'normal') . ";\">$label</a>";
+    }
+
+    // Previous
+    if ($page > 1) echo createPageLink($page - 1, "◀ Prev");
+
+    // Page numbers
+    for ($i = 1; $i <= $totalPages; $i++) {
+        echo createPageLink($i, $i);
+    }
+
+    // Next
+    if ($page < $totalPages) echo createPageLink($page + 1, "Next ▶");
+  ?>
+</div>
+<?php endif; ?>
+
 </div>
 
 <script>
@@ -214,7 +252,7 @@ echo '</div>';
     "Melaka": ["Melaka Tengah", "Alor Gajah", "Jasin"],
     "Negeri Sembilan": ["Seremban", "Port Dickson", "Nilai"],
     "Pahang": ["Kuantan", "Temerloh", "Bentong", "Cameron Highlands"],
-    "Pulau Pinang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
+    "Penang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
     "Perak": ["Ipoh", "Taiping", "Teluk Intan", "Lumut"],
     "Perlis": ["Kangar", "Arau"],
     "Sabah": ["Kota Kinabalu", "Tawau", "Sandakan", "Lahad Datu"],
