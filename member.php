@@ -17,12 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "UPDATE student SET password = ? WHERE Email = ? AND Stud_MatricNo = ?";
+        $sql = "UPDATE student SET password = ?, approve = 0 WHERE Email = ? AND Stud_MatricNo = ?";
+
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sss", $hashedPassword, $Email, $Stud_MatricNo);
         
         if ($stmt->execute()) {
             echo "<script>alert('Registration successful!!! Please wait for Admin approval.'); window.location.href='login.html';</script>";
+
         } else {
             echo "<script>alert('Error: Cannot register');</script>";
         }
