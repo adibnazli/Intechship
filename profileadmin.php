@@ -1,11 +1,51 @@
 <?php
-// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    include("config/config.php");
 }
 include 'AdminHeader.php';
-?>
 
+// Dashboard statistics
+$sql_total = "SELECT COUNT(*) AS total FROM student_application";
+$result_total = mysqli_query($conn, $sql_total);
+$total_students = mysqli_fetch_assoc($result_total)['total'] ?? 0;
+
+$sql_applied = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = 'applied'";
+$result_applied = mysqli_query($conn, $sql_applied);
+$total_applied = mysqli_fetch_assoc($result_applied)['total'] ?? 0;
+
+$sql_success = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = 'completed'";
+$result_success = mysqli_query($conn, $sql_success);
+$total_success = mysqli_fetch_assoc($result_success)['total'] ?? 0;
+
+// Search functionality
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$where = '';
+if ($search !== '') {
+    $safe_search = mysqli_real_escape_string($conn, $search);
+    $where = "WHERE s.Stud_Name LIKE '%$safe_search%'";
+}
+
+// Main table query: join all relevant tables
+$sql_table = "
+SELECT 
+    sa.*, 
+    s.Stud_Name AS student_name, 
+    il.Int_Position AS position_applied, 
+    e.Comp_Name AS company,
+    sa.App_Date, 
+    sa.App_Status
+FROM student_application sa
+JOIN student s ON sa.StudentID = s.StudentID
+JOIN intern_listings il ON sa.InternshipID = il.InternshipID
+JOIN employer e ON il.EmployerID = e.EmployerID
+$where
+ORDER BY sa.App_Date DESC";
+$result_table = mysqli_query($conn, $sql_table);
+if (!$result_table) {
+    die("Query failed: " . mysqli_error($conn));
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +87,7 @@ include 'AdminHeader.php';
             display: flex;
             align-items: center;
             padding: 16px 20px;
+            position: relative;
         }
         .stat-icon {
             width: 56px;
@@ -57,14 +98,13 @@ include 'AdminHeader.php';
             justify-content: center;
             margin-right: 20px;
             flex-shrink: 0;
+            position: relative;
         }
         .stat-icon img {
-            width: 32px;
-            height: 32px;
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
         }
-        .stat-icon.blue { background: #09c1fc; }
-        .stat-icon.orange { background: #ff9100; }
-        .stat-icon.purple { background: #c300ff; }
         .stat-info {
             display: flex;
             flex-direction: column;
@@ -139,9 +179,10 @@ include 'AdminHeader.php';
             font-weight: 600;
             display: inline-block;
         }
-        .badge-review { background: #00b0ff; }
-        .badge-offered { background: #a200ff; }
-        .badge-completed { background: #00c853; }
+        .badge-pending { background: #FFD600; color: #333; }
+        .badge-accepted { background: #00c853; }
+        .badge-rejected { background: #d50000; }
+        .badge-interview { background: #2979ff; }
         .badge-other { background: #bdbdbd; }
         @media (max-width: 1000px) {
             .dashboard-stats { flex-direction: column; gap: 24px; align-items: center; }
@@ -161,7 +202,7 @@ include 'AdminHeader.php';
                         <img src="image/student.png" alt="Students">
                     </div>
                     <div class="stat-info">
-                        <div class="stat-number">170</div>
+                        <div class="stat-number"><?php echo $total_students; ?></div>
                         <div class="stat-label">Students</div>
                     </div>
                 </div>
@@ -170,7 +211,7 @@ include 'AdminHeader.php';
                         <img src="image/applied.png" alt="Students Applied">
                     </div>
                     <div class="stat-info">
-                        <div class="stat-number">90</div>
+                        <div class="stat-number"><?php echo $total_applied; ?></div>
                         <div class="stat-label">Students Applied</div>
                     </div>
                 </div>
@@ -179,15 +220,15 @@ include 'AdminHeader.php';
                         <img src="image/successfull.png" alt="Successful">
                     </div>
                     <div class="stat-info">
-                        <div class="stat-number">30</div>
-                        <div class="stat-label">Succesful</div>
+                        <div class="stat-number"><?php echo $total_success; ?></div>
+                        <div class="stat-label">Successful</div>
                     </div>
                 </div>
             </div>
             <div class="students-table-container">
                 <div class="students-status-title">Students Status</div>
                 <form class="students-status-search" method="get" action="">
-                    <input type="text" name="search" placeholder="Name">
+                    <input type="text" name="search" placeholder="Name" value="<?php echo htmlspecialchars($search); ?>">
                     <span class="search-icon">&#128269;</span>
                 </form>
                 <table class="students-status">
@@ -202,39 +243,38 @@ include 'AdminHeader.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Aisyah</td>
-                            <td>Web Developer</td>
-                            <td>TechNova</td>
-                            <td>03/04/2024</td>
-                            <td><span class="status-badge badge-review">In Review</span></td>
-                            <td>No record</td>
-                        </tr>
-                        <tr>
-                            <td>Danial</td>
-                            <td>IT Support</td>
-                            <td>CloudByte</td>
-                            <td>13/04/2024</td>
-                            <td><span class="status-badge badge-offered">Offered</span></td>
-                            <td><a href="#">Download</a></td>
-                        </tr>
-                        <tr>
-                            <td>Lee</td>
-                            <td>UI Design</td>
-                            <td>PixelSoft</td>
-                            <td>14/04/2024</td>
-                            <td><span class="status-badge badge-completed">Completed</span></td>
-                            <td><a href="#">Download</a></td>
-                        </tr>
-                        <tr>
-                            <td>Faris</td>
-                            <td>Developer</td>
-                            <td>Appsmith Co.</td>
-                            <td>03/04/2024</td>
-                            <td><span class="status-badge badge-offered">Offered</span></td>
-                            <td><a href="#">Download</a></td>
-                        </tr>
-                        <!-- Add more rows as needed -->
+                        <?php if ($result_table && mysqli_num_rows($result_table) > 0): ?>
+                            <?php while($row = mysqli_fetch_assoc($result_table)): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($row['student_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['position_applied']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['company']); ?></td>
+                                    <td><?php echo date('d/m/Y', strtotime($row['App_Date'])); ?></td>
+                                    <td>
+                                        <?php
+                                            $status = strtolower($row['App_Status']);
+                                            switch ($status) {
+                                                case 'pending':    $badge_class = 'badge-pending'; break;
+                                                case 'accepted':   $badge_class = 'badge-accepted'; break;
+                                                case 'rejected':   $badge_class = 'badge-rejected'; break;
+                                                case 'interview':  $badge_class = 'badge-interview'; break;
+                                                default:           $badge_class = 'badge-other'; break;
+                                            }
+                                        ?>
+                                        <span class="status-badge <?php echo $badge_class; ?>">
+                                            <?php echo ucfirst($status); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        No record
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" style="text-align:center;">No students found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
                 <div style="clear: both;"></div>
@@ -243,3 +283,4 @@ include 'AdminHeader.php';
     </div>
 </body>
 </html>
+<?php if (isset($conn)) mysqli_close($conn); ?>
