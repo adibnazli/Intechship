@@ -81,7 +81,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <ul>
                     <li><a href="profileadmin.php" class="<?php echo ($current_page == 'profileadmin.php') ? 'active' : ''; ?>">Profile</a></li>
                     <li><a href="datacollect.php" class="<?php echo ($current_page == 'datacollect.php') ? 'active' : ''; ?>">Data Collection</a></li>
-                    <li><a href=".php" class="<?php echo ($current_page == '.php') ? 'active' : ''; ?>">Student Identification</a></li> <!--untuk anwar -->
+                    <li><a href="adminApprove.php" class="<?php echo ($current_page == 'adminApprove.php') ? 'active' : ''; ?>">Student Verification</a></li> <!--untuk anwar -->
                     <li><a href="company_registration.php" class="<?php echo ($current_page == 'company_registration.php') ? 'active' : ''; ?>">Company Registration</a></li> <!--untuk anwar -->
 
                 </ul>

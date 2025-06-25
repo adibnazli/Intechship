@@ -65,7 +65,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                     $_SESSION['PicID'] = $user['PicID'];
                     $_SESSION['Pic_Name'] = $user['Pic_Name'];
 
-                    header("Location: adminApprove.php");
+                    header("Location: profileadmin.php");
 
                 } elseif (str_ends_with($Email, '@employer.my')) {
                     $_SESSION['EmployerID'] = $user['EmployerID'];
