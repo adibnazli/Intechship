@@ -4,7 +4,7 @@ include("config/config.php");
 
 // Check if student is logged in
 if (!isset($_SESSION['studentID'])) {
-  echo "Please log in to apply.";
+  header("Location: login.php"); // redirect to login page if not logged in
   exit;
 }
 
@@ -21,27 +21,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['internship_id'])) {
   $checkResult = $checkStmt->get_result();
 
   if ($checkResult->num_rows > 0) {
-    echo "You have already applied for this internship.";
+    // Already applied
+    header("Location: InternshipSearch.php?status=already_applied");
+    exit;
   } else {
-    // Insert application (no employerID included)
+    // Insert application
     $insert = "INSERT INTO student_application (StudentID, InternshipID, App_Date, App_Status) 
                VALUES (?, ?, NOW(), 'Pending')";
     $insertStmt = $conn->prepare($insert);
 
     if ($insertStmt) {
       $insertStmt->bind_param("ii", $studentID, $internshipID);
-
       if ($insertStmt->execute()) {
-        echo "Application submitted successfully!";
-        // header("Location: application_success.php");
+        header("Location: InternshipSearch.php?status=success");
+        exit;
       } else {
-        echo "Failed to apply. Please try again.";
+        header("Location: InternshipSearch.php?status=fail");
+        exit;
       }
     } else {
-      echo "SQL error: " . $conn->error;
+      header("Location: InternshipSearch.php?status=sql_error");
+      exit;
     }
   }
 } else {
-  echo "Invalid request.";
+  header("Location: InternshipSearch.php?status=invalid_request");
+  exit;
 }
 ?>

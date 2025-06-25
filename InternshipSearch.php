@@ -79,6 +79,29 @@ if (!isset($_SESSION['studentID'])) {
 </head>
 <body>
 
+<?php
+if (isset($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'success':
+            echo "<p style='color:green;'>Application submitted successfully!</p>";
+            break;
+        case 'already_applied':
+            echo "<p style='color:orange;'>You have already applied for this internship.</p>";
+            break;
+        case 'fail':
+            echo "<p style='color:red;'>Failed to apply. Please try again.</p>";
+            break;
+        case 'sql_error':
+            echo "<p style='color:red;'>A server error occurred. Please contact admin.</p>";
+            break;
+        case 'invalid_request':
+            echo "<p style='color:red;'>Invalid request.</p>";
+            break;
+    }
+}
+?>
+
+
 <div class="search-container">
   <!-- Search Form -->
   <form method="GET">
