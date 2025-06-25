@@ -152,7 +152,7 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
             border-radius: 50%;
             margin-right: 14px;
             flex-shrink: 0;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05); 
         }
         .pie-legend-label {
             font-size: 1.13rem;

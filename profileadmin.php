@@ -277,7 +277,7 @@ if (!$result_table) {
                                                 case 'accepted':   $badge_class = 'badge-accepted'; break;
                                                 case 'rejected':   $badge_class = 'badge-rejected'; break;
                                                 case 'interview':  $badge_class = 'badge-interview'; break;
-                                                default:           $badge_class = 'badge-other'; break;
+                                                default:           $badge_class = 'badge-other'; break; 
                                             }
                                         ?>
                                         <span class="status-badge <?php echo $badge_class; ?>">
