@@ -8,6 +8,8 @@ if (!isset($_SESSION['Comp_Name'])) {
 include("employerheader.php");
 include("config/config.php");
 
+$EmployerID = $_SESSION['EmployerID'];
+
 $sql = "SELECT student_application.*, 
                student.Stud_Name, 
                student.Stud_Programme, 
@@ -18,9 +20,14 @@ $sql = "SELECT student_application.*,
         FROM student_application
         JOIN student ON student_application.StudentID = student.StudentID
         JOIN intern_listings ON student_application.InternshipID = intern_listings.InternshipID
+        WHERE intern_listings.EmployerID = ?
         ORDER BY student_application.App_Date DESC";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $EmployerID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 ?>
 
 <html>
@@ -248,7 +255,7 @@ $result = $conn->query($sql);
                   <div class="dropdown-menu">
                     <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Interview</button>
                     <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Offer</button>
-                    <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Reject</button>
+                    <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Reject</button>
                   </div>
                 </div>
               </td>
@@ -296,10 +303,11 @@ $result = $conn->query($sql);
         button.addEventListener('click', function() {
           const status = this.getAttribute('data-status');
 
-          if (['Offered', 'Rejected', 'Interview'].includes(status)) {
-            alert(`❌ An email has already been sent for this application (${status}).`);
+          if (['Offered', 'Rejected', 'Interview', 'Accepted', 'Declined'].includes(status)) {
+            alert(`❌ You cannot schedule an interview. Application already marked as "${status}".`);
             return;
           }
+
 
           if (status !== 'In Review') {
             alert("❌ You must review the student's resume before inviting them to interview.");
@@ -337,10 +345,11 @@ $result = $conn->query($sql);
       document.querySelectorAll('.offer-btn').forEach(button => {
         button.addEventListener('click', function() {
           const status = this.getAttribute('data-status');
-          if (['Offered', 'Rejected'].includes(status)) {
-            alert(`❌ An email has already been sent for this application (${status}).`);
+          if (['Offered', 'Rejected', 'Accepted', 'Declined'].includes(status)) {
+            alert(`❌ You cannot make an offer. Application already marked as "${status}".`);
             return;
           }
+
 
           if (!['In Review', 'Interview'].includes(status)) {
             alert("❌ You must review the student's resume before making an offer.");
@@ -379,6 +388,13 @@ $result = $conn->query($sql);
           const email = this.getAttribute('data-email');
           const company = this.getAttribute('data-company');
           const appid = this.getAttribute('data-appid');
+          const status = this.getAttribute('data-status');
+
+          if (['Accepted', 'Declined'].includes(status)) {
+            alert(`❌ You cannot reject an application that has already been ${status.toLowerCase()}.`);
+            return;
+          }
+
 
           fetch('send_rejection_email.php', {
               method: 'POST',

@@ -49,7 +49,10 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
             } 
             else if (str_ends_with($Email, '@university.edu')) 
             {
-                // header("Location: admin_dashboard.php");
+                $_SESSION['PicID'] = $user['PicID'];
+                $_SESSION['Pic_Name'] = $user['Pic_Name'];
+
+                header("Location: profileadmin.php");
             } 
             else if (str_ends_with($Email, '@employer.my')) 
             {
