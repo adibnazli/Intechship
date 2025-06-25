@@ -21,7 +21,7 @@ if ($result->num_rows !== 1) {
 }
 
 $row = $result->fetch_assoc();
-$selectedProgrammes = explode(',', $row['Int_Programme']);
+$selectedProgrammes = array_map('trim', explode(',', $row['Int_Programme']));
 ?>
 
 <!DOCTYPE html>

@@ -1,3 +1,10 @@
+<?php
+include("config/config.php");
+
+$sql = "SELECT Pic_Name FROM person_in_charge";
+$result = $conn->query($sql);
+?>
+
 <html>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,15 +82,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <li><a href="profileadmin.php" class="<?php echo ($current_page == 'profileadmin.php') ? 'active' : ''; ?>">Profile</a></li>
                     <li><a href="datacollect.php" class="<?php echo ($current_page == 'datacollect.php') ? 'active' : ''; ?>">Data Collection</a></li>
                     <li><a href=".php" class="<?php echo ($current_page == '.php') ? 'active' : ''; ?>">Student Identification</a></li> <!--untuk anwar -->
-                    <li><a href=".php" class="<?php echo ($current_page == '.php') ? 'active' : ''; ?>">Company Registration</a></li> <!--untuk anwar -->
+                    <li><a href="company_registration.php" class="<?php echo ($current_page == 'company_registration.php') ? 'active' : ''; ?>">Company Registration</a></li> <!--untuk anwar -->
 
                 </ul>
             </nav>
             <div style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
               <div style="color: white; font-family: 'Roboto', sans-serif; font-size: 16px; margin-right: 20px;">
+
                 <?php
-                  if (isset($_SESSION['Stud_Name'])) {
-                      echo htmlspecialchars($_SESSION['Stud_Name']);
+                  if (isset($_SESSION['Pic_Name'])) {
+                      echo htmlspecialchars($_SESSION['Pic_Name']);
                   } else {
                       echo '';
                   }

@@ -3,13 +3,19 @@ session_start();
 include("employerheader.php");
 include("config/config.php");
 
-// Fetch jobs (you can filter by EmployerID if needed)
+$EmployerID = $_SESSION['EmployerID'];
+
 $sql = "SELECT intern_listings.*, employer.Comp_Name 
         FROM intern_listings 
         JOIN employer ON intern_listings.EmployerID = employer.EmployerID 
+        WHERE intern_listings.EmployerID = ?
         ORDER BY intern_listings.InternshipID DESC";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $EmployerID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>

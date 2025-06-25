@@ -79,7 +79,7 @@ if ($result && $result->num_rows > 0) {
   <p class="info"><strong>Company:</strong> <?= htmlspecialchars($row['EmployerName']) ?></p>
   <p class="info"><strong>Program Type:</strong> <?= htmlspecialchars($row['Int_Qualification']) ?></p>
   <p class="info"><strong>Programme:</strong> <?= htmlspecialchars($row['Int_Programme']) ?></p>
-  <p class="info"><strong>Location:</strong> <?= htmlspecialchars($row['Int_State']) ?>, <?= htmlspecialchars($row['Int_City']) ?></p>
+  <p class="info"><strong>Location:</strong> <?= htmlspecialchars($row['Int_City']) ?>, <?= htmlspecialchars($row['Int_State']) ?></p>
   <p class="info"><strong>Allowance:</strong> RM <?= number_format($row['Int_Allowance'], 2) ?></p>
   <p class="info"><strong>Posted At:</strong> <?= htmlspecialchars($row['PostedAt']) ?></p>
   <p class="info"><strong>Description:</strong></p>
