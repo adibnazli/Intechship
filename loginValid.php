@@ -62,6 +62,9 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                     }
 
                 } elseif (str_ends_with($Email, '@university.edu')) {
+                    $_SESSION['PicID'] = $user['PicID'];
+                    $_SESSION['Pic_Name'] = $user['Pic_Name'];
+
                     header("Location: adminApprove.php");
 
                 } elseif (str_ends_with($Email, '@employer.my')) {
