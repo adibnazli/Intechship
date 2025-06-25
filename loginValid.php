@@ -29,6 +29,7 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
         }
     }
 
+    
     // If user found in DB
     if ($user) {
         if(str_ends_with($Email, '@student.utem.edu.my') && isset($user['approve']) && $user['approve'] == 3){
