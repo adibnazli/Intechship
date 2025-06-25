@@ -280,15 +280,15 @@ $stmt->close();
     }
   }
 
-  function renumberSkills() {
-    const tags = document.querySelectorAll('#skillsList .tag');
-    tags.forEach((tag, i) => {
-      const text = tag.innerText.replace(/\d+\.\s/, '').trim();
-      const button = tag.querySelector('button');
-      tag.innerHTML = `${i + 1}. ${text}`;
-      tag.appendChild(button);
-    });
-  }
+ function renumberSkills() {
+  const tags = document.querySelectorAll('#skillsList .tag');
+  tags.forEach((tag, i) => {
+    const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
+    const button = tag.querySelector('button');
+    tag.innerHTML = `${i + 1}. ${text}`;
+    tag.appendChild(button);
+  });
+}
 
   function addLocation() {
     const locationInput = document.getElementById('locationInput');
@@ -304,25 +304,33 @@ $stmt->close();
   }
 
   function renumberLocations() {
-    const tags = document.querySelectorAll('#locationsList .tag');
-    tags.forEach((tag, i) => {
-      const text = tag.innerText.replace(/\d+\.\s/, '').trim();
-      const button = tag.querySelector('button');
-      tag.innerHTML = `${i + 1}. ${text}`;
-      tag.appendChild(button);
-    });
-  }
+  const tags = document.querySelectorAll('#locationsList .tag');
+  tags.forEach((tag, i) => {
+    const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
+    const button = tag.querySelector('button');
+    tag.innerHTML = `${i + 1}. ${text}`;
+    tag.appendChild(button);
+  });
+}
 
   // Before form submit, gather skill/location values
-  document.querySelector("form").addEventListener("submit", function () {
-    const skills = Array.from(document.querySelectorAll("#skillsList .tag"))
-      .map(tag => tag.innerText.replace(/\d+\.\s/, '').trim());
-    document.getElementById("skillsHidden").value = skills.join(",");
+  // Before form submit, gather skill/location values (fixed to avoid saving × button)
+document.querySelector("form").addEventListener("submit", function () {
+  const skills = Array.from(document.querySelectorAll("#skillsList .tag"))
+    .map(tag => {
+      const textNode = tag.firstChild.textContent || '';
+      return textNode.replace(/\d+\.\s/, '').trim();
+    });
+  document.getElementById("skillsHidden").value = skills.join(",");
 
-    const locations = Array.from(document.querySelectorAll("#locationsList .tag"))
-      .map(tag => tag.innerText.replace(/\d+\.\s/, '').trim());
-    document.getElementById("locationsHidden").value = locations.join(",");
-  });
+  const locations = Array.from(document.querySelectorAll("#locationsList .tag"))
+    .map(tag => {
+      const textNode = tag.firstChild.textContent || '';
+      return textNode.replace(/\d+\.\s/, '').trim();
+    });
+  document.getElementById("locationsHidden").value = locations.join(",");
+});
+
 </script>
 </body>
 </html>
