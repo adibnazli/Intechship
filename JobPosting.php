@@ -118,6 +118,9 @@ include("employerheader.php");
           <option value="Melaka">Melaka</option>
           <option value="Johor">Johor</option>
           <option value="Selangor">Selangor</option>
+          <option value="Kuala Lumpur">Kuala Lumpur</option>
+          <option value="Putrajaya">Putrajaya</option>
+          <option value="Labuan">Labuan</option>
         </select>
       </div>
       <div>
