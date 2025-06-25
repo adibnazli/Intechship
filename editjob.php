@@ -181,6 +181,7 @@ $selectedProgrammes = array_map('trim', explode(',', $row['Int_Programme']));
 
   </form>
 </div>
+<?php include("footer.php"); ?>
 </body>
 </html>
 <?php $conn->close(); ?>

@@ -326,5 +326,6 @@ $stmt->close();
     document.getElementById("locationsHidden").value = locations.join(",");
   });
 </script>
+<?php include("footer.php"); ?>
 </body>
 </html>

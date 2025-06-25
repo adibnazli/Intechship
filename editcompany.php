@@ -123,6 +123,7 @@ $row = $result->fetch_assoc();
 
   </form>
 </div>
+<?php include("footer.php"); ?>
 </body>
 </html>
 <?php $conn->close(); ?>

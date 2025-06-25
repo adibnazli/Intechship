@@ -102,6 +102,6 @@ if ($result && $result->num_rows > 0) {
     return confirm("Are you sure you want to apply for this internship?");
   }
 </script>
-
+<?php include("footer.php"); ?>
 </body>
 </html>

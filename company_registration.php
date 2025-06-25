@@ -216,5 +216,6 @@ $result = $stmt->get_result();
       return confirm("Are you sure you want to register this company?");
     }
 </script>
+<?php include("footer.php"); ?>
 </body>
 </html>
