@@ -93,7 +93,7 @@ if ($result && $result->num_rows > 0) {
     <form method="POST" action="apply_submit.php" onsubmit="return confirmApplication();">
       <input type="hidden" name="internship_id" value="<?= htmlspecialchars($row['InternshipID']) ?>">
       <button type="submit" class="btn btn-apply">Apply</button>
-    </form>
+  </form>
   </div>
 </div>
 
