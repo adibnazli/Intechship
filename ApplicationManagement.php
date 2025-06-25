@@ -315,21 +315,29 @@ $result = $stmt->get_result();
 
       // Reject button click
       document.querySelectorAll('.reject-btn').forEach(button => {
-        button.addEventListener('click', function() {
-          const email = this.getAttribute('data-email');
-          const company = this.getAttribute('data-company');
-          const appid = this.getAttribute('data-appid');
-          fetch('send_rejection_email.php', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-              body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
-            })
-            .then(response => response.text())
-            .then(data => {
-              alert(data);
-            });
-        });
+      button.addEventListener('click', function() {
+        const status = this.getAttribute('data-status');
+        if (['Offered', 'Rejected', 'Accepted', 'Declined'].includes(status)) {
+          alert(`❌ You cannot reject this application. It is already marked as "${status}".`);
+          return;
+        }
+
+        const email = this.getAttribute('data-email');
+        const company = this.getAttribute('data-company');
+        const appid = this.getAttribute('data-appid');
+
+        fetch('send_rejection_email.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}`
+          })
+          .then(response => response.text())
+          .then(data => {
+            alert(data);
+          });
       });
+    });
+
 
     });
   </script>
