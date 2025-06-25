@@ -129,7 +129,7 @@ if (isset($_GET['status'])) {
       <select name="location" id="location" onchange="updateAreaOptions()">
         <option value="">Location</option>
         <?php
-        $states = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Penang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya'];
+        $states = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Pulau Pinang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya'];
         foreach ($states as $state) {
           $selected = ($_GET['location'] ?? '') == $state ? 'selected' : '';
           echo "<option value=\"$state\" $selected>$state</option>";
@@ -275,7 +275,7 @@ echo '</div>';
     "Melaka": ["Melaka Tengah", "Alor Gajah", "Jasin"],
     "Negeri Sembilan": ["Seremban", "Port Dickson", "Nilai"],
     "Pahang": ["Kuantan", "Temerloh", "Bentong", "Cameron Highlands"],
-    "Penang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
+    "Pulau Pinang": ["George Town", "Butterworth", "Bayan Lepas", "Seberang Perai"],
     "Perak": ["Ipoh", "Taiping", "Teluk Intan", "Lumut"],
     "Perlis": ["Kangar", "Arau"],
     "Sabah": ["Kota Kinabalu", "Tawau", "Sandakan", "Lahad Datu"],
