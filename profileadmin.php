@@ -5,16 +5,26 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 include 'AdminHeader.php';
 
-// Dashboard statistics
-$sql_total = "SELECT COUNT(*) AS total FROM student_application";
-$result_total = mysqli_query($conn, $sql_total);
-$total_students = mysqli_fetch_assoc($result_total)['total'] ?? 0;
+// 1. Students: Total students who use the website
+$sql_total_students = "SELECT COUNT(*) AS total FROM student";
+$result_total_students = mysqli_query($conn, $sql_total_students);
+$total_students = mysqli_fetch_assoc($result_total_students)['total'] ?? 0;
 
-$sql_applied = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = 'applied'";
+// 2. Students Applied: Unique students who applied by themselves (have at least one application with App_Status NOT 'offered')
+$sql_applied = "
+    SELECT COUNT(DISTINCT sa.StudentID) AS total 
+    FROM student_application sa 
+    WHERE sa.App_Status != 'offered'
+";
 $result_applied = mysqli_query($conn, $sql_applied);
 $total_applied = mysqli_fetch_assoc($result_applied)['total'] ?? 0;
 
-$sql_success = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = 'completed'";
+// 3. Successful: Unique students who have at least one application with App_Status = 'accepted' (and not offered)
+$sql_success = "
+    SELECT COUNT(DISTINCT sa.StudentID) AS total 
+    FROM student_application sa 
+    WHERE sa.App_Status = 'accepted'
+";
 $result_success = mysqli_query($conn, $sql_success);
 $total_success = mysqli_fetch_assoc($result_success)['total'] ?? 0;
 
@@ -51,7 +61,7 @@ if (!$result_table) {
 <head>
     <meta charset="UTF-8">
     <title>Admin | Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Martel+Sans:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Martel+Sans:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             background: #fff;
@@ -65,12 +75,20 @@ if (!$result_table) {
             padding: 0 0 40px 0;
         }
         .dashboard-title {
-            font-family: 'Martel Sans', 'Roboto', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 2.8rem;
             font-weight: 700;
             text-align: center;
             margin-top: 20px;
             margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+        .dashboard-contentbox {
+            background: #f6f6f6;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 1700px;
         }
         .dashboard-stats {
             display: flex;
@@ -84,25 +102,31 @@ if (!$result_table) {
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             min-width: 270px;
             min-height: 110px;
+            max-width: 330px;
+            width: 100%;
+            height: 120px;
             display: flex;
             align-items: center;
-            padding: 16px 20px;
+            padding: 0 24px;
             position: relative;
+            box-sizing: border-box;
         }
         .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 20px;
+            margin-right: 22px;
             flex-shrink: 0;
-            position: relative;
         }
+        .stat-icon.blue { background: #04b7ed; }
+        .stat-icon.orange { background: #ff8800; }
+        .stat-icon.purple { background: #b620ff; }
         .stat-icon img {
-            width: 48px;
-            height: 48px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
         }
         .stat-info {
@@ -113,24 +137,12 @@ if (!$result_table) {
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
         }
         .stat-label {
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             font-weight: 600;
-        }
-        .dashboard-contentbox {
-            background: #f6f6f6;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 8px;
-            max-width: 1700px;
-        }
-        .students-status-title {
-            font-family: 'Martel Sans', 'Roboto', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 18px;
+            margin-top: 0;
         }
         .students-table-container {
             background: #fff;
@@ -140,6 +152,12 @@ if (!$result_table) {
             box-shadow: 0 2px 12px rgba(0,0,0,0.03);
             max-width: 850px;
             overflow-x: auto;
+        }
+        .students-status-title {
+            font-family: 'Martel Sans', 'Roboto', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 18px;
         }
         .students-status-search {
             float: right;
@@ -187,6 +205,7 @@ if (!$result_table) {
         @media (max-width: 1000px) {
             .dashboard-stats { flex-direction: column; gap: 24px; align-items: center; }
             .dashboard-contentbox { padding: 20px; }
+            .stat-card { max-width: 100%; min-width: 220px; width: 100%; }
         }
     </style>
 </head>

@@ -24,13 +24,13 @@ $result_total_user = mysqli_query($conn, $sql_total_user);
 $total_users = mysqli_fetch_assoc($result_total_user)['total'] ?? 0;
 
 // Applications by Status for Pie Chart
-$status_labels = ["In Review", "Interview", "Offered", "Accepted", "Rejected"];
+$status_labels = ["Pending", "Interview", "Offered", "Accepted", "Rejected"];
 $status_colors = [
-    "In Review" => "#FFD600",
-    "Interview" => "#FF9100",
-    "Offered" => "#B620FF",
-    "Accepted" => "#00C853",
-    "Rejected" => "#D50000"
+    "Pending"   => "#FFD600", // yellow
+    "Interview" => "#2979ff", // blue
+    "Offered"   => "#b620ff", // purple
+    "Accepted"  => "#00C853", // green
+    "Rejected"  => "#D50000"  // red
 ];
 $status_counts = [];
 foreach ($status_labels as $status) {
@@ -66,49 +66,106 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
         .main-content {
             max-width: 1200px; margin: 0 auto; background: #f4f4f4;
         }
-        .page-title-row {
-            margin: 35px 0 0 0; display: flex; align-items: center;
-        }
-        .intechship-title {
-            font-family: 'Righteous', cursive; font-size: 45px; font-weight: 400; margin-right: 36px;
-            letter-spacing: 1px;
-        }
-        .intechship-title .red { color: #dd1111; }
-        .intechship-title .black { color: #222; }
-        .intechship-title .space { margin-right: 30px; }
         .analytics-title {
-            font-size: 2rem; font-weight: 700; text-align: center; margin: 30px 0 28px 0;
+            font-size: 2rem; font-weight: 700; text-align: center; margin: 45px 0 28px 0;
         }
         .analytics-row {
             display: flex; justify-content: center; gap: 48px; margin-bottom: 38px;
         }
         .analytics-card {
-            background: #fff; border-radius: 15px; min-width: 240px; min-height: 110px;
-            display: flex; flex-direction: column; align-items: center; padding: 24px 0;
+            background: #fff; border-radius: 10px; width: 310px; min-height: 150px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
-        .analytics-card .analytics-label {
-            font-size: 1.05rem; font-weight: 400; color: #222; margin-bottom: 6px;
-        }
-        .analytics-card .analytics-value {
-            font-size: 2.4rem; font-weight: 700; color: #111;
+        .analytics-top-row {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 6px;
+            justify-content: center;
         }
         .analytics-card .analytics-icon {
-            margin-bottom: 8px;
-            display: block;
+            flex-shrink: 0;
+            margin-top: 7px;
         }
         .analytics-card .analytics-icon img {
-            height: 27px; margin-right: 7px; vertical-align: middle;
+            height: 32px; width: 32px; object-fit: contain; display: block;
+        }
+        .analytics-info {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-start;
+        }
+        .analytics-info .analytics-label {
+            font-size: 1.24rem; font-weight: 400; color: #111; margin-top: 0; margin-bottom: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .analytics-value {
+            font-size: 2.8rem; font-weight: 700; color: #111; text-align: center; width: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+        .analytics-value .percent {
+            font-size: 1.7rem; vertical-align: super; font-weight: 700;
         }
         .analytics-section-row {
             display: flex; gap: 36px; margin: 0 auto 36px auto; justify-content: center;
         }
         .analytics-section {
             background: #fff; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 25px 32px 30px 32px; min-width: 400px; flex: 1;
+            padding: 25px 32px 30px 32px; min-width: 480px; flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        .analytics-section h3 {
-            font-weight: 700; font-size: 1.35rem; margin: 0 0 20px 0;
+        .analytics-status-flex {
+            display: flex;
+            align-items: flex-start;
+            gap: 36px;
+        }
+        .analytics-section .analytics-status-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 18px;
+            margin-top: 0;
+            width: 100%;
+            text-align: left;
+            letter-spacing: -0.5px;
+        }
+        .analytics-section .pie-legend-list {
+            margin-top: 0;
+            padding-left: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 270px;
+            justify-content: space-between;
+        }
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+        .pie-legend-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .pie-legend-label {
+            font-size: 1.13rem;
+            color: #222;
+            font-family: 'Roboto', sans-serif;
+        }
+        .analytics-section .pie-chart-wrapper {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
         .top-company-table {
             width: 100%; border-collapse: collapse; background: #fff;
@@ -121,43 +178,66 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
         @media (max-width: 1200px) {
             .analytics-section-row { flex-direction: column; gap: 24px; }
             .main-content { max-width: 98vw;}
+            .analytics-row { flex-direction: column; gap: 24px; align-items: center; }
+            .analytics-card { min-width: 220px; width: 90vw;}
+            .analytics-section { min-width: 90vw;}
+        }
+        @media (max-width: 900px) {
+            .analytics-status-flex { flex-direction: column; align-items: flex-start; gap: 0; }
+            .pie-chart-wrapper { margin-bottom: 20px; }
+            .analytics-section .pie-legend-list { height: auto; }
         }
     </style>
 </head>
 <body>
     <div class="main-content">
-        <div class="page-title-row">
-            <span class="intechship-title">
-                
-            </span>
-        </div>
         <div class="analytics-title">Analytics</div>
         <div class="analytics-row">
             <div class="analytics-card">
-                <span class="analytics-icon"><img src="image/statistics.png" alt="Total Apps"></span>
-                <span class="analytics-label">Total Applications</span>
-                <span class="analytics-value"><?php echo $total_applications; ?></span>
+                <div class="analytics-top-row">
+                    <span class="analytics-icon"><img src="image/totapps.png" alt="Total Applications"></span>
+                    <div class="analytics-info">
+                        <span class="analytics-label">Total Applications</span>
+                    </div>
+                </div>
+                <div class="analytics-value"><?php echo $total_applications; ?></div>
             </div>
             <div class="analytics-card">
-                <span class="analytics-icon"><img src="image/completion.png" alt="Completion Rate"></span>
-                <span class="analytics-label">Completion Rate</span>
-                <span class="analytics-value"><?php echo $completion_rate; ?>%</span>
+                <div class="analytics-top-row">
+                    <span class="analytics-icon"><img src="image/rate.png" alt="Completion Rate"></span>
+                    <div class="analytics-info">
+                        <span class="analytics-label">Completion Rate</span>
+                    </div>
+                </div>
+                <div class="analytics-value">
+                    <?php echo $completion_rate; ?><span class="percent">%</span>
+                </div>
             </div>
             <div class="analytics-card">
-                <span class="analytics-icon"><img src="image/users.png" alt="Total Users"></span>
-                <span class="analytics-label">Total User</span>
-                <span class="analytics-value"><?php echo $total_users; ?></span>
+                <div class="analytics-top-row">
+                    <span class="analytics-icon"><img src="image/totuser.png" alt="Total Users"></span>
+                    <div class="analytics-info">
+                        <span class="analytics-label">Total User</span>
+                    </div>
+                </div>
+                <div class="analytics-value"><?php echo $total_users; ?></div>
             </div>
         </div>
         <div class="analytics-section-row">
             <div class="analytics-section">
-                <h3>Applications by Status</h3>
-                <canvas id="appStatusPie" width="340" height="160"></canvas>
-                <div style="margin-top:14px;">
-                <?php foreach ($status_labels as $i => $label): ?>
-                    <span style="display:inline-block;width:17px;height:17px;background:<?php echo $status_colors[$label]; ?>;border-radius:100px;margin-right:6px;vertical-align:middle;"></span>
-                    <span style="margin-right:22px;font-size:1.08em;"><?php echo $label; ?> (<?php echo $status_counts[$i]; ?>)</span>
-                <?php endforeach; ?>
+                <div class="analytics-status-title">Applications by Status</div>
+                <div class="analytics-status-flex">
+                    <div class="pie-chart-wrapper">
+                        <canvas id="appStatusPie" width="230" height="230"></canvas>
+                    </div>
+                    <ul class="pie-legend-list">
+                        <?php foreach ($status_labels as $i => $label): ?>
+                            <li class="pie-legend-item">
+                                <span class="pie-legend-dot" style="background:<?php echo $status_colors[$label]; ?>"></span>
+                                <span class="pie-legend-label"><?php echo $label; ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
             </div>
             <div class="analytics-section">
@@ -192,6 +272,35 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Custom percent labels in the middle of each segment
+        Chart.register({
+            id: 'showPercentLabels',
+            afterDraw: function(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const ctx = chart.ctx;
+                const dataset = chart.data.datasets[0];
+                const total = dataset.data.reduce((a, b) => a + b, 0);
+                const meta = chart.getDatasetMeta(0);
+                ctx.save();
+                meta.data.forEach(function(element, i) {
+                    const percent = total ? Math.round(dataset.data[i] / total * 100) : 0;
+                    if (percent > 0) {
+                        const model = element;
+                        const midAngle = (model.startAngle + model.endAngle) / 2;
+                        const radius = (model.outerRadius + model.innerRadius) / 2;
+                        const x = chart.width/2 + Math.cos(midAngle) * radius;
+                        const y = chart.height/2 + Math.sin(midAngle) * radius;
+                        ctx.fillStyle = "#222";
+                        ctx.font = "bold 1.14em Roboto";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(percent + "%", x, y);
+                    }
+                });
+                ctx.restore();
+            }
+        });
+
         const ctx = document.getElementById('appStatusPie').getContext('2d');
         new Chart(ctx, {
             type: 'doughnut',
@@ -204,10 +313,8 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
                 }]
             },
             options: {
-                cutout: '65%',
-                plugins: {
-                    legend: { display: false }
-                }
+                cutout: '60%',
+                plugins: { legend: { display: false } }
             }
         });
     </script>
