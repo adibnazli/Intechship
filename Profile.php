@@ -5,152 +5,152 @@
   <title>User Profile - InTechShip</title>
   <style>
     body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background-color: #f9f9f9;
-}
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
 
-.content {
-  width: 1300px;
-  height: 650px;
-  margin: 0px auto;
-  background-color:rgb(231, 223, 223);
-  display:  flex;
-  gap: 40px;
-  padding: 70px 20px;
-}
+    .content {
+      width: 1300px;
+      min-height: 650px;
+      margin: 0 auto;
+      background-color: rgb(238, 237, 237);
+      display: flex;
+      gap: 40px;
+      padding: 70px 20px;
+    }
 
-.box {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
-  flex: 1;
-}
+    .box {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+      flex: 1;
+    }
 
-.box h3, .box h4 {
-  margin-bottom: 15px;
-  font-size: 20px;
-  color: #333;
-}
+    .box h3, .box h4 {
+      margin-bottom: 15px;
+      font-size: 20px;
+      color: #333;
+    }
 
-.upload-section label {
-  margin-bottom: 10px;
-  color: #444;
-}
+    .upload-section label {
+      margin-bottom: 10px;
+      color: #444;
+    }
 
-.upload-section input[type="file"] {
-  display: none;
-}
+    .upload-section input[type="file"] {
+      display: none;
+    }
 
-.resume-box {
-  padding: 10px;
-  border-radius: 12px;
-  text-align: left;
-  margin-top: 10px;
-}
+    .resume-box {
+      padding: 10px;
+      border-radius: 12px;
+      text-align: left;
+      margin-top: 10px;
+    }
 
-.resume-box .custom-upload {
-  display: inline-block;
-  background-color: #fff;
-  color: #000;
-  border: 2px solid #ffcc00;
-  padding: 10px 25px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .resume-box .custom-upload {
+      display: inline-block;
+      background-color: #fff;
+      color: #000;
+      border: 2px solid #ffcc00;
+      padding: 10px 25px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
+    .upload-section .custom-upload {
+      border: 2px solid #ffcc00;
+      background: #fff;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      display: inline-block;
+    }
 
-.upload-section .custom-upload {
-  border: 2px solid #ffcc00;
-  background: #fff;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-  display: inline-block;
-}
+    .input-group {
+      display: flex;
+      margin-top: 10px;
+    }
 
-.input-group {
-  display: flex;
-  margin-top: 10px;
-}
+    .input-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
 
-.input-group input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-right: 10px;
-}
+    .add-skill-btn, .save-btn, .edit-btn {
+      background-color: #ffdc00;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.add-skill-btn, .save-btn, .edit-btn {
-  background-color: #ffdc00;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .skills-list, .locations-list {
+      margin-top: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 15px;
+    }
 
-.skills-list, .locations-list {
-  margin-top: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  padding: 15px;
-}
+    .tag {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
 
-.tag {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: #f5f5f5;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  font-size: 15px;
-}
+    .tag button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #000;
+      cursor: pointer;
+    }
 
-.tag button {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #000;
-  cursor: pointer;
-}
+    .salary-section {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
 
-.salary-section {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
+    .salary-section input,
+    .salary-section select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
 
-.salary-section input,
-.salary-section select {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: left;
+    }
 
-.salary-section .save-btn,
-.salary-section .edit-btn {
-  padding: 10px 16px;
-}
+    .save-container {
+      text-align: center;
+      margin: 30px 0;
+    }
 
-.section-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-
-
-
+    .save-container .save-btn {
+      padding: 12px 40px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -185,19 +185,15 @@ $stmt->close();
           <label for="resume" class="custom-upload">Upload</label>
           <input type="file" id="resume" name="resume" accept=".pdf">
         </div>
-       <?php
-  if (!empty($student['Stud_ResumePath'])):
-    $filePath = $student['Stud_ResumePath'];
-    $fileName = basename($filePath);
-?>
-  <p style="margin-top: 10px;">
-    Uploaded: <a href="<?= $filePath ?>" target="_blank"><?= $fileName ?></a>
-    |
-    <a href="delete_resume.php" onclick="return confirm('Are you sure you want to delete your resume?');" style="color:red;">Delete</a>
-  </p>
-<?php endif; ?>
-
-
+        <?php if (!empty($student['Stud_ResumePath'])):
+          $filePath = $student['Stud_ResumePath'];
+          $fileName = basename($filePath);
+        ?>
+        <p style="margin-top: 10px;">
+          Uploaded: <a href="<?= $filePath ?>" target="_blank"><?= $fileName ?></a> |
+          <a href="delete_resume.php" onclick="return confirm('Are you sure you want to delete your resume?');" style="color:red;">Delete</a>
+        </p>
+        <?php endif; ?>
       </div>
 
       <h3 style="margin-top: 30px;">Skills</h3>
@@ -226,8 +222,10 @@ $stmt->close();
       <div class="section-title">Job Preferences</div>
 
       <h4>Preferred Location</h4>
-      <input type="text" id="locationInput">
-      <button class="save-btn" type="button" onclick="addLocation()">Add Locations</button>
+      <div class="input-group">
+        <input type="text" id="locationInput">
+        <button class="save-btn" type="button" onclick="addLocation()">Add Locations</button>
+      </div>
 
       <div class="locations-list" id="locationsList">
         <?php
@@ -250,23 +248,21 @@ $stmt->close();
           <option value="Monthly" <?= ($student['Allowance_Type'] ?? '') == 'Monthly' ? 'selected' : '' ?>>Monthly</option>
           <option value="Weekly" <?= ($student['Allowance_Type'] ?? '') == 'Weekly' ? 'selected' : '' ?>>Weekly</option>
         </select>
-        <button class="save-btn" type="submit">Save</button>
       </div>
     </div>
   </div>
 
-  <!-- Hidden fields to send skills and locations -->
-  <!-- Hidden fields to send skills and locations -->
-<!-- Hidden fields to send skills and locations -->
-<input type="hidden" name="skills" id="skillsHidden">
-<input type="hidden" name="locations" id="locationsHidden">
+  <div class="save-container">
+    <button class="save-btn" type="submit">Save Profile</button>
+  </div>
 
-<input type="hidden" name="matric_no" value="<?= $student['Matric_No'] ?? '' ?>">
+  <!-- Hidden fields -->
+  <input type="hidden" name="skills" id="skillsHidden">
+  <input type="hidden" name="locations" id="locationsHidden">
+  <input type="hidden" name="matric_no" value="<?= $student['Matric_No'] ?? '' ?>">
 </form>
 
-
-
-  <script>
+<script>
   function addSkill() {
     const skillInput = document.getElementById('skillInput');
     const skillsList = document.getElementById('skillsList');
@@ -280,15 +276,15 @@ $stmt->close();
     }
   }
 
- function renumberSkills() {
-  const tags = document.querySelectorAll('#skillsList .tag');
-  tags.forEach((tag, i) => {
-    const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
-    const button = tag.querySelector('button');
-    tag.innerHTML = `${i + 1}. ${text}`;
-    tag.appendChild(button);
-  });
-}
+  function renumberSkills() {
+    const tags = document.querySelectorAll('#skillsList .tag');
+    tags.forEach((tag, i) => {
+      const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
+      const button = tag.querySelector('button');
+      tag.innerHTML = `${i + 1}. ${text}`;
+      tag.appendChild(button);
+    });
+  }
 
   function addLocation() {
     const locationInput = document.getElementById('locationInput');
@@ -304,33 +300,31 @@ $stmt->close();
   }
 
   function renumberLocations() {
-  const tags = document.querySelectorAll('#locationsList .tag');
-  tags.forEach((tag, i) => {
-    const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
-    const button = tag.querySelector('button');
-    tag.innerHTML = `${i + 1}. ${text}`;
-    tag.appendChild(button);
+    const tags = document.querySelectorAll('#locationsList .tag');
+    tags.forEach((tag, i) => {
+      const text = tag.firstChild.textContent.replace(/\d+\.\s/, '').trim();
+      const button = tag.querySelector('button');
+      tag.innerHTML = `${i + 1}. ${text}`;
+      tag.appendChild(button);
+    });
+  }
+
+  // Collect skills and locations before form submit
+  document.querySelector("form").addEventListener("submit", function () {
+    const skills = Array.from(document.querySelectorAll("#skillsList .tag"))
+      .map(tag => {
+        const textNode = tag.firstChild.textContent || '';
+        return textNode.replace(/\d+\.\s/, '').trim();
+      });
+    document.getElementById("skillsHidden").value = skills.join(",");
+
+    const locations = Array.from(document.querySelectorAll("#locationsList .tag"))
+      .map(tag => {
+        const textNode = tag.firstChild.textContent || '';
+        return textNode.replace(/\d+\.\s/, '').trim();
+      });
+    document.getElementById("locationsHidden").value = locations.join(",");
   });
-}
-
-  // Before form submit, gather skill/location values
-  // Before form submit, gather skill/location values (fixed to avoid saving × button)
-document.querySelector("form").addEventListener("submit", function () {
-  const skills = Array.from(document.querySelectorAll("#skillsList .tag"))
-    .map(tag => {
-      const textNode = tag.firstChild.textContent || '';
-      return textNode.replace(/\d+\.\s/, '').trim();
-    });
-  document.getElementById("skillsHidden").value = skills.join(",");
-
-  const locations = Array.from(document.querySelectorAll("#locationsList .tag"))
-    .map(tag => {
-      const textNode = tag.firstChild.textContent || '';
-      return textNode.replace(/\d+\.\s/, '').trim();
-    });
-  document.getElementById("locationsHidden").value = locations.join(",");
-});
-
 </script>
 </body>
 </html>
