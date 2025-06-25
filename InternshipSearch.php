@@ -219,7 +219,7 @@ echo '<p>' . htmlspecialchars($row['Int_Programme']) . '</p>';
 echo '</div>';
 
 echo '<div style="text-align: right;">';
-echo '<p class="location" style="margin: 0;">📍 ' . htmlspecialchars($row['Int_State']) . ', ' . htmlspecialchars($row['Int_City']) . '</p>';
+echo '<p class="location" style="margin: 0;">📍 ' . htmlspecialchars($row['Int_City']) . ', ' . htmlspecialchars($row['Int_State']) . '</p>';
 echo '<p style="font-weight: bold; color: #2c3e50; margin: 4px 0;">RM ' . number_format($row['Int_Allowance'], 2) . '</p>';
 echo '</div>';
 

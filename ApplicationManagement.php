@@ -215,7 +215,7 @@ $result = $stmt->get_result();
                   <div class="dropdown-menu">
                     <button class="dropdown-item interview-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Interview</button>
                     <button class="dropdown-item offer-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Offer</button>
-                    <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>">Reject</button>
+                    <button class="dropdown-item reject-btn" data-email="<?= $row['Email'] ?>" data-company="<?= $_SESSION['Comp_Name'] ?>" data-appid="<?= $row['ApplicationID'] ?>" data-status="<?= $row['App_Status'] ?>">Reject</button>
                   </div>
                 </div>
               </td>
@@ -286,8 +286,8 @@ $result = $stmt->get_result();
       document.querySelectorAll('.offer-btn').forEach(button => {
         button.addEventListener('click', function() {
           const status = this.getAttribute('data-status');
-          if (['Offered', 'Rejected'].includes(status)) {
-            alert(`❌ An email has already been sent for this application (${status}).`);
+          if (['Offered', 'Rejected', 'Accepted', 'Declined'].includes(status)) {
+            alert(`❌ You cannot make an offer. Application already marked as "${status}".`);
             return;
           }
           if (!['In Review', 'Interview'].includes(status)) {
