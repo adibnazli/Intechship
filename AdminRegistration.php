@@ -108,10 +108,8 @@
                 <label>Programme</label>
                 <select id="programme" name="programme" required>
                 <option value="">Select a Programme</option>
-                <option value="DCS" <?= $programme == 'DCS' ? 'selected' : '' ?>>DCS</option>
-                <option value="BITI" <?= $programme == 'BITI' ? 'selected' : '' ?>>BITI</option>
-                <option value="BITS" <?= $programme == 'BITS' ? 'selected' : '' ?>>BITS</option>
-                <option value="BITM" <?= $programme == 'BITM' ? 'selected' : '' ?>>BITM</option>
+                <option value="Diploma" <?= $programme == 'Diploma' ? 'selected' : '' ?>>Diploma</option>
+                <option value="Degree" <?= $programme == 'Degree' ? 'selected' : '' ?>>Degree</option>
                 </select>
             </div>
 
