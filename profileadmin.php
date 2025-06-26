@@ -300,7 +300,6 @@ if (!$result_table) {
             </div>
         </div>
     </div>
-    <?php include("footer.php"); ?>
 </body>
 </html>
 <?php if (isset($conn)) mysqli_close($conn); ?>
