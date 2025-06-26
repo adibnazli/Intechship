@@ -250,41 +250,91 @@ $result = $stmt->get_result();
       });
 
       // Interview button click
+      // Show the interview modal
+      function openInterviewModal(email, company, appid) {
+        document.getElementById('interviewEmail').value = email;
+        document.getElementById('interviewCompany').value = company;
+        document.getElementById('interviewAppID').value = appid;
+        document.getElementById('interviewModal').style.display = 'flex';
+      }
+
+      // Close the interview modal
+      function closeInterviewModal() {
+        document.getElementById('interviewModal').style.display = 'none';
+        document.getElementById('interviewForm').reset();
+      }
+      document.getElementById('cancelInterviewBtn').addEventListener('click', closeInterviewModal);
+
+      // Update interview button click to show modal instead of prompt
       document.querySelectorAll('.interview-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           const status = this.getAttribute('data-status');
           if (['Offered', 'Rejected', 'Interview'].includes(status)) {
             alert(`❌ An email has already been sent for this application (${status}).`);
             return;
           }
-          if (status !== 'In Review') {
+
+          if (['Accepted', 'Declined'].includes(status)) {
+            alert(`❌ Unable to send an interview email, student's status is (${status}).`);
+            return;
+          }
+
+          if (status === 'Pending') {
             alert("❌ You must review the student's resume before inviting them to interview.");
             return;
           }
-          const date = prompt("Enter Interview Date (e.g. 2025-07-03):");
-          if (!date) return;
-          const time = prompt("Enter Interview Time (e.g. 10:00 AM):");
-          if (!time) return;
-          const location = prompt("Enter Interview Location or Link:");
-          if (!location) return;
-          const email = this.getAttribute('data-email');
-          const company = this.getAttribute('data-company');
-          const appid = this.getAttribute('data-appid');
-          fetch('send_interview_email.php', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-              body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&location=${encodeURIComponent(location)}`
-            })
-            .then(response => response.text())
-            .then(data => {
-              alert(data);
-            });
+
+          openInterviewModal(
+            this.getAttribute('data-email'),
+            this.getAttribute('data-company'),
+            this.getAttribute('data-appid')
+          );
         });
       });
 
+      // Interview form submission
+      document.getElementById('interviewForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('interviewEmail').value;
+        const company = document.getElementById('interviewCompany').value;
+        const appid = document.getElementById('interviewAppID').value;
+        const date = document.getElementById('interviewDate').value;
+        const time = document.getElementById('interviewTime').value;
+        const location = document.getElementById('interviewLocation').value;
+
+        fetch('send_interview_email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&location=${encodeURIComponent(location)}`
+        })
+          .then(response => response.text())
+          .then(data => {
+            alert(data);
+            closeInterviewModal();
+          });
+      });
+
+
       // Offer button click
+      // Show the offer modal
+      function openOfferModal(email, company, appid) {
+        document.getElementById('offerEmail').value = email;
+        document.getElementById('offerCompany').value = company;
+        document.getElementById('offerAppID').value = appid;
+        document.getElementById('offerModal').style.display = 'flex';
+      }
+
+      // Close the modal
+      function closeOfferModal() {
+        document.getElementById('offerModal').style.display = 'none';
+        document.getElementById('offerForm').reset();
+      }
+      document.getElementById('cancelOfferBtn').addEventListener('click', closeOfferModal);
+
+      // Handle "Offer" button clicks
       document.querySelectorAll('.offer-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           const status = this.getAttribute('data-status');
           if (['Offered', 'Rejected', 'Accepted', 'Declined'].includes(status)) {
             alert(`❌ You cannot make an offer. Application already marked as "${status}".`);
@@ -294,24 +344,37 @@ $result = $stmt->get_result();
             alert("❌ You must review the student's resume before making an offer.");
             return;
           }
-          const startDate = prompt("Enter Internship Start Date (e.g. 2025-07-01):");
-          if (!startDate) return;
-          const endDate = prompt("Enter Internship End Date (e.g. 2025-09-30):");
-          if (!endDate) return;
-          const email = this.getAttribute('data-email');
-          const company = this.getAttribute('data-company');
-          const appid = this.getAttribute('data-appid');
-          fetch('send_offer_email.php', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-              body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`
-            })
-            .then(response => response.text())
-            .then(data => {
-              alert(data);
-            });
+
+          openOfferModal(
+            this.getAttribute('data-email'),
+            this.getAttribute('data-company'),
+            this.getAttribute('data-appid')
+          );
         });
       });
+
+      // Handle form submission
+      document.getElementById('offerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('offerEmail').value;
+        const company = document.getElementById('offerCompany').value;
+        const appid = document.getElementById('offerAppID').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        fetch('send_offer_email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `email=${encodeURIComponent(email)}&company=${encodeURIComponent(company)}&appid=${appid}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`
+        })
+          .then(response => response.text())
+          .then(data => {
+            alert(data);
+            closeOfferModal();
+          });
+      });
+
 
       // Reject button click
       document.querySelectorAll('.reject-btn').forEach(button => {
@@ -341,6 +404,60 @@ $result = $stmt->get_result();
 
     });
   </script>
+
+  <!-- Offer Modal -->
+  <div id="offerModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px; border-radius: 10px; max-width: 400px; width: 100%;">
+      <h2 style="margin-top: 0;">Send Internship Offer</h2>
+      <form id="offerForm">
+        <label>Start Date:</label>
+        <input type="date" id="startDate" name="start_date" required style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+        
+        <label>End Date:</label>
+        <input type="date" id="endDate" name="end_date" required style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+
+        <input type="hidden" id="offerEmail" name="email">
+        <input type="hidden" id="offerCompany" name="company">
+        <input type="hidden" id="offerAppID" name="appid">
+
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+          <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 5px;">Send</button>
+          <button type="button" id="cancelOfferBtn" style="padding: 8px 16px; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interview Modal -->
+<div id="interviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 30px; border-radius: 10px; max-width: 400px; width: 100%;">
+    <h2 style="margin-top: 0;">Send Interview Invitation</h2>
+    <form id="interviewForm">
+      <label>Date:</label>
+      <input type="date" id="interviewDate" name="date" required style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+
+      <label>Time:</label>
+      <input type="text" id="interviewTime" name="time" required placeholder="e.g. 10:00 AM" style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+
+      <label>Location / Link:</label>
+      <input type="text" id="interviewLocation" name="location" required style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+
+      <input type="hidden" id="interviewEmail" name="email">
+      <input type="hidden" id="interviewCompany" name="company">
+      <input type="hidden" id="interviewAppID" name="appid">
+
+      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button type="submit" style="padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Send</button>
+        <button type="button" id="cancelInterviewBtn" style="padding: 8px 16px; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
 
   <?php include("footer.php"); ?>
 </body>
