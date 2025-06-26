@@ -75,6 +75,12 @@ if (!isset($_SESSION['studentID'])) {
       font-weight: bold;
       cursor: pointer;
     }
+
+    .apply-btn:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
   </style>
 </head>
 <body>
@@ -230,7 +236,7 @@ echo '</div>';
 $details = strip_tags($row['Int_Details']); // Remove HTML tags if any
 $shortDetails = strlen($details) > 150 ? substr($details, 0, 150) . '...' : $details;
 echo '<p>' . htmlspecialchars($shortDetails) . '</p>';
-echo '<a href="intern_detail.php?id=' . $row['InternshipID'] . '" class="apply-btn" style="display: inline-block; text-decoration: none; color: black;">View Detail</a>';
+echo '<a href="intern_detail.php?id=' . $row['InternshipID'] . '" class="apply-btn" style="display: inline-block; text-decoration: none; color: black; font-weight: normal;">View Detail</a>';
 echo '</div>';
       }
     } else {

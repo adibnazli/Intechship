@@ -73,6 +73,12 @@
       display: inline-block;
     }
 
+    .custom-upload:hover {
+      background-color: #ffdc00;
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
     .input-group {
       display: flex;
       margin-top: 10px;
@@ -93,6 +99,24 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+    }
+
+    .add-skill-btn:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .save-btn:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .edit-btn:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
     .skills-list, .locations-list {

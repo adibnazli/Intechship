@@ -165,6 +165,15 @@ function getCurrentStageClass($status, $stageName) {
             padding: 5px 10px;
             cursor: pointer;
         }
+
+        .table-container tbody tr {
+            cursor: pointer; /* shows pointer hand */
+        }
+
+        .table-container tbody tr:hover {
+            background-color: #f1f1f1; /* adds hover effect */
+        }
+
     </style>
 </head>
 <body>

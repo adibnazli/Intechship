@@ -70,6 +70,18 @@ if ($result && $result->num_rows > 0) {
     .btn-apply {
       background-color: #ffdc00;
     }
+
+    .btn-back:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-apply:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
   </style>
 </head>
 <body>

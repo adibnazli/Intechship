@@ -422,8 +422,8 @@ $result = $stmt->get_result();
         <input type="hidden" id="offerAppID" name="appid">
 
         <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-          <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 5px;">Send</button>
-          <button type="button" id="cancelOfferBtn" style="padding: 8px 16px; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
+          <button type="submit" style="padding: 8px 16px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px;">Send</button>
+          <button type="button" id="cancelOfferBtn" style="padding: 8px 16px; cursor: pointer; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
         </div>
       </form>
     </div>
@@ -449,8 +449,8 @@ $result = $stmt->get_result();
       <input type="hidden" id="interviewAppID" name="appid">
 
       <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-        <button type="submit" style="padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Send</button>
-        <button type="button" id="cancelInterviewBtn" style="padding: 8px 16px; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
+        <button type="submit" style="padding: 8px 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px;">Send</button>
+        <button type="button" id="cancelInterviewBtn" style="padding: 8px 16px; cursor: pointer; background-color: #ccc; border: none; border-radius: 5px;">Cancel</button>
       </div>
     </form>
   </div>
