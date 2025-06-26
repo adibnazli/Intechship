@@ -7,6 +7,18 @@ $students = [
   ['name' => 'David Martinez', 'matric' => 'D032310012', 'status' => 'Failed', 'date' => '08/04/2024'],
   ['name' => 'John Hamm', 'matric' => 'D032310782', 'status' => 'Verified', 'date' => '03/04/2024'],
 ];
+
+$search = $_GET['search'] ?? '';
+$statusFilter = $_GET['status'] ?? '';
+
+if (!empty($search) || !empty($statusFilter)) {
+    $students = array_filter($students, function ($s) use ($search, $statusFilter) {
+        $matchesSearch = empty($search) || stripos($s['matric'], $search) !== false;
+        $matchesStatus = empty($statusFilter) || strtolower($s['status']) === strtolower($statusFilter);
+        return $matchesSearch && $matchesStatus;
+    });
+}
+
 ?>
 
 <?php
@@ -127,19 +139,26 @@ include 'AdminHeader.php';
 </head>
 <body>
   <div class="container">
-    <h4>Student Validation Dashboard</h4>
+<div class="header-section">
+  <h2 class="generals" style="margin: 0 auto;">Dashboard</h2>
+</div>
     <hr>
 
-    <div class="search-bar">
-      <input type="text" placeholder="Search Matric Number">
-      <button class="btn-find">Find</button>
-    </div>
+    <form method="GET" class="search-bar">
+  <input type="text" name="search" placeholder="Search Matric Number" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+  <button type="submit" class="btn-find">Find</button>
+</form>
 
-    <div class="tabs">
-      <button class="tab active">All Students</button>
-      <button class="tab">Pending</button>
-      <button class="tab">Verified</button>
-    </div>
+
+    <?php
+$statusFilter = $_GET['status'] ?? '';
+?>
+<div class="tabs">
+  <a href="StudentValidation.php" class="tab <?= $statusFilter == '' ? 'active' : '' ?>">All Students</a>
+  <a href="StudentValidation.php?status=Pending" class="tab <?= $statusFilter == 'Pending' ? 'active' : '' ?>">Pending</a>
+  <a href="StudentValidation.php?status=Verified" class="tab <?= $statusFilter == 'Verified' ? 'active' : '' ?>">Verified</a>
+</div>
+
 
     <table class="students-table">
       <thead>
