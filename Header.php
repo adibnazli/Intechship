@@ -2,8 +2,19 @@
 session_start();
 include("config/config.php");
 
-$sql = "SELECT Name FROM academic_unit";
-$result = $conn->query($sql);
+if (isset($_SESSION['academicID'])) {
+    $unitID = $_SESSION['academicID'];
+
+    $stmt = $conn->prepare("SELECT Name FROM academic_unit WHERE academicID = ?");
+    $stmt->bind_param("i", $unitID); 
+    $stmt->execute();
+    $stmt->bind_result($unitName);
+    
+    if ($stmt->fetch()) {
+        $_SESSION['Name'] = $unitName;
+    }
+    $stmt->close();
+  }
 ?>
 
 <html>
