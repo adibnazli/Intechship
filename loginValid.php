@@ -73,6 +73,8 @@ if (!empty($_SESSION['Email']) && !empty($_SESSION['password'])) {
                     header("Location: PostListing.php");
 
                 } elseif (str_ends_with($Email, '@academic.my')) {
+                    $_SESSION['academicID'] = $user['academicID'];
+                    $_SESSION['Name'] = $user['Name'];
                     header("Location: AdminRegistration.php");
                 }
                 exit;

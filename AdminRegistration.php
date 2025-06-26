@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="AdminRegistration.css">
     <link rel="stylesheet" href="Header.css" />
     <title>AdminRegistration</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .buttonSave {
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <?php 
@@ -92,7 +101,7 @@
             <h2 class="generals">GENERALS</h2>
             <div class="button-group">
                 <a href="AdminRegistration.php" class="buttonCan" style="text-decoration: none; display: inline-block;">Cancel</a>
-                <button type="submit" class="buttonSave" name="save_btn" >Save Information</button>
+                <button type="submit" class="buttonSave" name="save_btn" >Save</button>
             </div>
         </div>
 
