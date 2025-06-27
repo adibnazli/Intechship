@@ -81,32 +81,37 @@ if (!isset($_SESSION['studentID'])) {
       transform: translateY(-2px);
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
+
   </style>
 </head>
 <body>
 
 <?php
 if (isset($_GET['status'])) {
+    $msg = '';
     switch ($_GET['status']) {
         case 'success':
-            echo "<p style='color:green;'>Application submitted successfully!</p>";
+            $msg = "Application submitted successfully!";
             break;
         case 'already_applied':
-            echo "<p style='color:orange;'>You have already applied for this internship.</p>";
+            $msg = "You have already applied for this internship.";
             break;
         case 'fail':
-            echo "<p style='color:red;'>Failed to apply. Please try again.</p>";
+            $msg = "Failed to apply. Please try again.";
             break;
         case 'sql_error':
-            echo "<p style='color:red;'>A server error occurred. Please contact admin.</p>";
+            $msg = "A server error occurred. Please contact admin.";
             break;
         case 'invalid_request':
-            echo "<p style='color:red;'>Invalid request.</p>";
+            $msg = "Invalid request.";
             break;
+    }
+
+    if ($msg) {
+        echo "<script>alert('$msg');</script>";
     }
 }
 ?>
-
 
 <div class="search-container">
   <!-- Search Form -->

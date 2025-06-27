@@ -51,13 +51,13 @@ $query = "UPDATE student SET
 $stmt = $conn->prepare($query);
 
 if ($resumePath) {
-    $stmt->bind_param("ssdssi", $skills, $locations, $allowance, $allowanceType, $resumePath, $studentID);
+    $stmt->bind_param("sssssi", $skills, $locations, $allowance, $allowanceType, $resumePath, $studentID);
 } else {
     $stmt->bind_param("ssdsi", $skills, $locations, $allowance, $allowanceType, $studentID);
 }
 
 if ($stmt->execute()) {
-    echo "<script>alert('Profile updated successfully!'); window.location.href='Profile.php';</script>";
+    echo "<script>alert('Profile updated successfully!'); window.location.replace('Profile.php');</script>";
 } else {
     echo "Error: " . $stmt->error;
 }
