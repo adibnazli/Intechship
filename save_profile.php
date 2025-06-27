@@ -27,7 +27,7 @@ if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
     // Rename file to avoid conflict
    // Use original file name (with studentID prepended for uniqueness)
 $cleanFileName = preg_replace("/[^A-Za-z0-9_\-\.]/", '_', $fileName); // sanitize
-$newFileName = $studentID . "_" . $cleanFileName;
+$newFileName = $cleanFileName; // Just use original cleaned name
 $uploadPath = $uploadDir . $newFileName;
 
 

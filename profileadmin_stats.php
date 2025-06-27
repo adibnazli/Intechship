@@ -3,6 +3,22 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 include(__DIR__ . "/config/config.php");
 header('Content-Type: application/json');
 
+// Check DB connection
+if (!isset($conn) || $conn === false) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database connection failed.'
+    ]);
+    exit;
+}
+if ($conn->connect_errno) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database connection error: ' . $conn->connect_error
+    ]);
+    exit;
+}
+
 $program_desc = '';
 if (!empty($_SESSION['Program_Desc'])) {
     $program_desc = trim($_SESSION['Program_Desc']);
@@ -17,6 +33,10 @@ if ($program_desc !== '') {
     // Total students
     $sql_count = "SELECT COUNT(*) FROM student WHERE Stud_Programme LIKE ?";
     $stmt = $conn->prepare($sql_count);
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'error' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
     $stmt->bind_param("s", $likeValue);
     $stmt->execute();
     $stmt->bind_result($student_total);
@@ -29,6 +49,10 @@ if ($program_desc !== '') {
                     JOIN student s ON sa.StudentID = s.StudentID
                     WHERE s.Stud_Programme LIKE ?";
     $stmt = $conn->prepare($sql_applied);
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'error' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
     $stmt->bind_param("s", $likeValue);
     $stmt->execute();
     $stmt->bind_result($applied_total);
@@ -41,6 +65,10 @@ if ($program_desc !== '') {
                     JOIN student s ON sa.StudentID = s.StudentID
                     WHERE s.Stud_Programme LIKE ? AND sa.App_Status = 'Accepted'";
     $stmt = $conn->prepare($sql_success);
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'error' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
     $stmt->bind_param("s", $likeValue);
     $stmt->execute();
     $stmt->bind_result($success_total);

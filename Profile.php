@@ -353,5 +353,31 @@ $stmt->close();
   
 </script>
 <?php include("footer.php"); ?>
+<script>
+  document.getElementById("resume").addEventListener("change", function () {
+    const fileInput = this;
+    const formData = new FormData();
+    formData.append("resume", fileInput.files[0]);
+
+    fetch("upload_resume.php", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+      if (result === "success") {
+        alert("Resume uploaded successfully!");
+        location.reload(); // reload to show uploaded file
+      } else {
+        alert("Upload failed: " + result);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("Upload failed.");
+    });
+  });
+</script>
+
 </body>
 </html>
