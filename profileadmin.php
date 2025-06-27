@@ -36,7 +36,7 @@ $result_students = mysqli_query($conn, $sql_students);
 body { background: #f4f4f4; margin: 0; font-family: 'Roboto', sans-serif; }
 .dashboard-bg { background: #f4f4f4; min-height: 100vh; padding-top: 40px; }
 .dashboard-subtitle { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 2rem; text-align: center; margin-top: 16px; margin-bottom: 30px; }
-.dashboard-contentbox { background: #f4f4f4; border-radius: 0; padding: 60px 0 60px 0; max-width: 1450px; margin: 0 auto; }
+.dashboard-contentbox { background:rgb(236, 236, 236); border-radius: 0; padding: 60px 0 60px 0; max-width: 1450px; margin: 0 auto; }
 .dashboard-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 56px; }
 .stat-card {
     background: #fff;
