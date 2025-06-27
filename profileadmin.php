@@ -17,64 +17,89 @@ body { background: #f4f4f4; margin: 0; font-family: 'Roboto', sans-serif; }
 .dashboard-bg { background: #f4f4f4; min-height: 100vh; padding-top: 40px; }
 .dashboard-subtitle { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 2rem; text-align: center; margin-top: 16px; margin-bottom: 30px; }
 .dashboard-contentbox { background:rgb(236, 236, 236); border-radius: 0; padding: 60px 0 60px 0; max-width: 1450px; margin: 0 auto; }
-.dashboard-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 56px; }
-.stat-card {
-    background: #fff;
-    border-radius: 18px;
-    min-width: 260px;
-    max-width: 330px;
-    width: 330px;
-    height: 120px;
+
+/* --- Stats Card Row --- */
+.stats-row {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-bottom: 30px;
-    margin-top: 10px;
-    position: relative;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 56px;
+    background: #f7f7f7;
+    border-radius: 18px;
+    padding: 32px 0 18px 0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .stats-card {
     background: #fff;
     border-radius: 16px;
-    min-width: 200px;
-    padding: 20px 26px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    width: 220px;
+    height: 110px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1.5px solid #e0e0e0;
+    box-shadow: none;
+    margin: 0;
+    position: relative;
+    padding: 0;
+    justify-content: flex-start;
+}
+.stats-card:not(:last-child)::after { display: none; }
+.stats-card .icon-img-bg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    margin-left: 18px;
+    margin-right: 18px;
+}
+.stats-card .icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+.stats-card .stats-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+}
+.stats-card .value {
+    font-size: 2.1rem;
+    font-weight: 900;
+    margin-bottom: 0;
+    margin-top: 2px;
+    color: #111;
+    line-height: 1.1;
+}
+.stats-card .desc {
+    font-size: 1.08rem;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+@media (max-width: 1000px) {
+    .stats-row { flex-direction: column; gap: 18px; padding: 18px 0; }
+    .stats-card { width: 95vw; max-width: 350px; margin: 0 auto; }
+    .stats-card:not(:last-child)::after { display: none; }
+}
+.center-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    max-width: 800px; /* increased from 600px */
+    margin: 38px auto 0 auto;
+    padding: 32px 32px 32px 32px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-weight: 700;
-    position: relative;
-    border: 2px solid #e0e0e0;
-    /* z-index to show above divider */
-    z-index: 1;
-}
-/* Add vertical dividers between the 3 cards */
-.stats-card:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    right: -15px;
-    top: 30%;
-    height: 40%;
-    width: 3px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    z-index: 2;
-}
-.stats-card .icon-img {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    margin-bottom: 7px;
-}
-.stats-card .value { font-size: 2.2rem; font-weight: 900; }
-.stats-card .desc { font-size: 1.1rem; color: #222; font-weight: 600;}
-.center-card {
-    margin: 0 auto;
-    margin-bottom: 60px;
-    max-width: 700px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    padding: 32px 36px 26px 36px;
 }
 .student-table-header {
     font-size: 1.3rem;
@@ -83,6 +108,7 @@ body { background: #f4f4f4; margin: 0; font-family: 'Roboto', sans-serif; }
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 .student-table-header form {
     margin: 0;
@@ -110,11 +136,16 @@ body { background: #f4f4f4; margin: 0; font-family: 'Roboto', sans-serif; }
 .table-responsive {
     width: 100%;
     overflow-x: auto;
+    display: flex;
+    justify-content: center;
 }
 table {
-    width: 100%;
+    width: 98%;
+    max-width: 700px; /* increased from 500px */
     border-collapse: collapse;
     margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
 }
 th, td {
     padding: 8px 10px;
@@ -165,27 +196,25 @@ tr:nth-child(even) td { background: #f9f9f9;}
 <body>
 <?php include 'AdminHeader.php'; ?>
 
-<div class="dashboard-title">Dashboard</div>
-
-<!-- Stats Row -->
+<div class="dashboard-subtitle">Dashboard</div>
 <div class="stats-row">
-    <div class="stats-card students" style="flex-direction:row;align-items:center;min-width:260px;">
-        <img src="image/student.png" alt="Students Icon" style="width:48px;height:48px;margin-right:18px;">
-        <div style="display:flex;flex-direction:column;align-items:flex-start;">
+    <div class="stats-card">
+        <span class="icon-img-bg" style="background:#00CFFF;"><img src="image/student.png" alt="Students Icon" class="icon-img"></span>
+        <div class="stats-text">
             <div class="value" id="students-count">-</div>
             <div class="desc">Students</div>
         </div>
     </div>
-    <div class="stats-card applied" style="flex-direction:row;align-items:center;min-width:260px;">
-        <img src="image/applied.png" alt="Applied Icon" style="width:48px;height:48px;margin-right:18px;">
-        <div style="display:flex;flex-direction:column;align-items:flex-start;">
+    <div class="stats-card">
+        <span class="icon-img-bg" style="background:#FF9800;"><img src="image/applied.png" alt="Applied Icon" class="icon-img"></span>
+        <div class="stats-text">
             <div class="value" id="applied-count">-</div>
             <div class="desc">Students Applied</div>
         </div>
     </div>
-    <div class="stats-card success" style="flex-direction:row;align-items:center;min-width:260px;">
-        <img src="image/successfull.png" alt="Success Icon" style="width:48px;height:48px;margin-right:18px;">
-        <div style="display:flex;flex-direction:column;align-items:flex-start;">
+    <div class="stats-card">
+        <span class="icon-img-bg" style="background:#D500F9;"><img src="image/successfull.png" alt="Success Icon" class="icon-img"></span>
+        <div class="stats-text">
             <div class="value" id="success-count">-</div>
             <div class="desc">Successful</div>
         </div>
@@ -222,7 +251,7 @@ function loadStats() {
         if (data && data.success) {
             $('#students-count').text(data.student_total);
             $('#applied-count').text(data.applied_total);
-            $('#success-count').text(data.success_total);
+            $('#success-count').text(data.success_rate); // Use percentage for completion rate
         } else {
             $('#students-count').text('-');
             $('#applied-count').text('-');
