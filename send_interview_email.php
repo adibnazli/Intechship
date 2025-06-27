@@ -59,8 +59,8 @@ if ($row = $result->fetch_assoc()) {
         $mail->isSMTP();
         $mail->Host = 'sandbox.smtp.mailtrap.io';
         $mail->SMTPAuth = true;
-        $mail->Username = 'b597cefe42b0e4';
-        $mail->Password = 'd19776e18e0ce8';
+        $mail->Username = '19bd4b9b2eef33';
+        $mail->Password = '52964182414a6b';
         $mail->Port = 2525;
 
         $mail->setFrom('no-reply@yourcompany.com', "$company Recruitment");
