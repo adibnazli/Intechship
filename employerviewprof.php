@@ -6,7 +6,7 @@ if (!isset($_SESSION['Comp_Name'])) {
 }
 
 include("employerheader.php");
-include("config/config.php");
+include('config/connect.php');
 
 if (!isset($_GET['id'])) {
   echo "<div style='padding:40px;text-align:center;'>Student ID is missing.</div>";

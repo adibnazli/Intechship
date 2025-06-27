@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-include(__DIR__ . "/config/config.php");
+include('config/connect.php');
 
 $student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) : 0;
 if ($student_id <= 0) {

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/config.php';
+include('config/connect.php');
 include 'Header.php';
 
 /*Delete*/

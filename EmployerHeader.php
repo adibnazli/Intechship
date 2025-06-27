@@ -1,5 +1,5 @@
 <?php
-include("config/config.php");
+include('config/connect.php');
 
 $sql = "SELECT Comp_Name FROM employer";
 $result = $conn->query($sql);

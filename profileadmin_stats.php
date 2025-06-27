@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-include(__DIR__ . "/config/config.php");
+include('config/connect.php');
 header('Content-Type: application/json');
 
 // Check DB connection

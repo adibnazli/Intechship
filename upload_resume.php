@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/config.php");
+include('config/connect.php');
 
 if (!isset($_SESSION['studentID'])) {
     http_response_code(403);

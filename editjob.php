@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("employerheader.php");
-include("config/config.php");
+include('config/connect.php');
 
 if (!isset($_GET['id'])) {
     echo "Invalid request.";

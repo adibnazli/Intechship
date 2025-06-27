@@ -1,5 +1,5 @@
 <?php
-include("config/config.php");
+include('config/connect.php');
 
 if (isset($_GET['appid'])) {
     $appId = (int) $_GET['appid'];

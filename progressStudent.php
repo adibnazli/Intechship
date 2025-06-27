@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/config.php';
+include('config/connect.php');
 
 if (!isset($_SESSION['studentID'])) {
     header('Location: login.html');
@@ -10,8 +10,7 @@ if (!isset($_SESSION['studentID'])) {
 include 'UserHeader.php';
 
 if (isset($_SESSION['response_status'])) {
-    $status  = $_SESSION['response_status'];
-    $msg = "You've successfully $status the offer!";
+    $msg = "You've successfully {$_SESSION['response_status']} the offer!";
     if (isset($_SESSION['email_error'])) $msg .= " (Email notification failed)";
     echo "<script>alert('$msg');</script>";
     unset($_SESSION['response_status'], $_SESSION['email_error']);
@@ -21,8 +20,12 @@ $studentID     = $_SESSION['studentID'];
 $selectedAppID = $_GET['app'] ?? null;
 
 $q = $conn->prepare(
-    "SELECT sa.ApplicationID, sa.App_Date, sa.App_Status,il.Int_Position, il.Int_City, il.Int_State FROM student_application sa
-     JOIN intern_listings il ON sa.InternshipID = il.InternshipID WHERE sa.StudentID = ? ORDER BY sa.App_Date DESC"
+    "SELECT sa.ApplicationID, sa.App_Date, sa.App_Status,
+            il.Int_Position, il.Int_City, il.Int_State
+     FROM student_application sa
+     JOIN intern_listings il ON sa.InternshipID = il.InternshipID
+     WHERE sa.StudentID = ?
+     ORDER BY sa.App_Date DESC"
 );
 $q->bind_param('i', $studentID);
 $q->execute();
@@ -34,9 +37,6 @@ function stage($status, $stage)
     return array_search($status, $order) >= array_search($stage, $order) ? 'active' : '';
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html>
 
@@ -51,9 +51,9 @@ function stage($status, $stage)
         }
 
         .progress-container {
-            text-align: center;
             width: 700px;
             margin: 30px auto;
+            text-align: center;
             border: 2px solid #ccc;
             border-radius: 15px;
             background: #fff;
@@ -121,8 +121,8 @@ function stage($status, $stage)
             padding: 8px 14px;
             border-radius: 8px;
             font-weight: bold;
-            color: #000;
-            display: inline-block
+            display: inline-block;
+            color: #000
         }
 
         .status-pending {
@@ -178,11 +178,12 @@ function stage($status, $stage)
 </head>
 
 <body>
-
     <?php
     if ($selectedAppID) {
         $d = $conn->prepare(
-            "SELECT sa.App_Date, sa.App_Status, il.Int_Position FROM student_application sa JOIN intern_listings il ON sa.InternshipID = il.InternshipID
+            "SELECT sa.App_Date, sa.App_Status, il.Int_Position
+         FROM student_application sa
+         JOIN intern_listings il ON sa.InternshipID = il.InternshipID
          WHERE sa.ApplicationID = ? AND sa.StudentID = ?"
         );
         $d->bind_param('ii', $selectedAppID, $studentID);
@@ -202,17 +203,17 @@ function stage($status, $stage)
             ];
             foreach ($steps as $key => $info) {
                 if (!in_array($key, ['Accepted', 'Declined', 'Rejected']) || $s == $key || stage($s, $key) == 'active') {
-                    [$icon, $label] = $info;
-                    echo "<div class='step " . stage($s, $key) . "'><i class='$icon'></i><p>$label</p></div>";
+                    echo "<div class='step " . stage($s, $key) . "'><i class='{$info[0]}'></i><p>{$info[1]}</p></div>";
                 }
             }
             echo "</div></div>";
-        } 
-        else echo "<div class='progress-container'><h3>Application not found.</h3></div>";
-    } 
-    else echo "<div class='progress-container'><h3>Select an application to view progress.</h3></div>";
+        } else {
+            echo "<div class='progress-container'><h3>Application not found.</h3></div>";
+        }
+    } else {
+        echo "<div class='progress-container'><h3>Select an application to view progress.</h3></div>";
+    }
     ?>
-
     <h2 style="text-align:center;margin-top:50px">All Applications</h2>
     <div class="table-container">
         <table>
@@ -230,15 +231,29 @@ function stage($status, $stage)
                 if ($rows) {
                     foreach ($rows as $r) {
                         $s = $r['App_Status'];
-                        $cls = match ($s) {
-                            'Pending'   => 'status-pill status-pending',
-                            'In Review' => 'status-pill status-review',
-                            'Interview' => 'status-pill status-interview',
-                            'Offered'   => 'status-pill status-offered',
-                            'Accepted'  => 'status-pill status-accepted',
-                            'Declined', 'Rejected' => 'status-pill status-declined',
-                            default     => 'status-pill'
-                        };
+                        switch ($s) {
+                            case 'Pending':
+                                $cls = 'status-pill status-pending';
+                                break;
+                            case 'In Review':
+                                $cls = 'status-pill status-review';
+                                break;
+                            case 'Interview':
+                                $cls = 'status-pill status-interview';
+                                break;
+                            case 'Offered':
+                                $cls = 'status-pill status-offered';
+                                break;
+                            case 'Accepted':
+                                $cls = 'status-pill status-accepted';
+                                break;
+                            case 'Declined':
+                            case 'Rejected':
+                                $cls = 'status-pill status-declined';
+                                break;
+                            default:
+                                $cls = 'status-pill';
+                        }
                         echo "<tr onclick=\"window.location='progressStudent.php?app={$r['ApplicationID']}'\">
               <td>" . htmlspecialchars($r['Int_Position']) . "</td>
               <td>" . htmlspecialchars($r['App_Date']) . "</td>
@@ -250,18 +265,16 @@ function stage($status, $stage)
                   <button type='submit' name='response' value='Accepted' class='accept-btn'>Accept</button>
                   <button type='submit' name='response' value='Declined' class='reject-btn'>Reject</button>
                   </form>";
-                        } 
-                        elseif ($s === 'Accepted') {
+                        } elseif ($s === 'Accepted') {
                             echo "<span class='status-pill status-accepted'>Accepted</span>";
-                        } 
-                        elseif ($s === 'Declined' || $s === 'Rejected') {
+                        } elseif ($s === 'Declined' || $s === 'Rejected') {
                             echo "<span class='status-pill status-declined'>Declined</span>";
-                        } 
-                        else echo '–';
+                        } else echo '–';
                         echo "</td></tr>";
                     }
-                } 
-                else echo "<tr><td colspan='5' style='text-align:center'>No applications found.</td></tr>";
+                } else {
+                    echo "<tr><td colspan='5' style='text-align:center'>No applications found.</td></tr>";
+                }
                 ?>
             </tbody>
         </table>

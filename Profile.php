@@ -181,7 +181,7 @@
 <?php
 session_start();
 include("UserHeader.php");
-include("config/config.php");
+include('config/connect.php');
 
 if (!isset($_SESSION['studentID'])) {
   die("Access denied.");

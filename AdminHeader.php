@@ -1,5 +1,5 @@
 <?php
-include("config/config.php");
+include('config/connect.php');
 
 $sql = "SELECT Pic_Name FROM person_in_charge";
 $result = $conn->query($sql);
