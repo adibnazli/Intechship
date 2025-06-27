@@ -162,7 +162,7 @@ tr:nth-child(even) td { background: #f9f9f9;}
     color: #2517e9;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none;
 }
 .student-name:hover {
     color: #FFB300;
