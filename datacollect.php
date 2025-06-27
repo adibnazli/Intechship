@@ -23,18 +23,29 @@ $sql_total_user = "SELECT COUNT(*) AS total FROM student";
 $result_total_user = mysqli_query($conn, $sql_total_user);
 $total_users = mysqli_fetch_assoc($result_total_user)['total'] ?? 0;
 
-// Applications by Status for Pie Chart
-$status_labels = ["Pending", "Interview", "Offered", "Accepted", "Rejected"];
+// Applications by Status for Pie Chart - now by unique students!
+$status_labels = [
+    "Pending",
+    "In review",
+    "Interview",
+    "Offered",
+    "Accepted",
+    "Declined",
+    "Rejected"
+];
 $status_colors = [
-    "Pending"   => "#FFD600", // yellow
-    "Interview" => "#2979ff", // blue
-    "Offered"   => "#b620ff", // purple
-    "Accepted"  => "#00C853", // green
-    "Rejected"  => "#D50000"  // red
+    "Pending"    => "#FFD600", // yellow
+    "In review"  => "#ffe066", // light yellow
+    "Interview"  => "#2979ff", // blue
+    "Offered"    => "#b620ff", // purple
+    "Accepted"   => "#00C853", // green
+    "Declined"   => "#bdbdbd", // gray
+    "Rejected"   => "#D50000"  // red
 ];
 $status_counts = [];
 foreach ($status_labels as $status) {
-    $sql = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = '$status'";
+    // Count unique students that have this status in at least one application
+    $sql = "SELECT COUNT(DISTINCT StudentID) AS total FROM student_application WHERE App_Status = '$status'";
     $result = mysqli_query($conn, $sql);
     $status_counts[] = (int)(mysqli_fetch_assoc($result)['total'] ?? 0);
 }
@@ -138,7 +149,7 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            height: 270px;
+            height: 240px; /* smaller to allow larger chart */
             justify-content: space-between;
         }
         .pie-legend-item {
@@ -161,7 +172,7 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
         }
         .analytics-section .pie-chart-wrapper {
             flex: 1;
-            min-width: 220px;
+            min-width: 290px; /* larger for bigger pie */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -228,7 +239,7 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
                 <div class="analytics-status-title">Applications by Status</div>
                 <div class="analytics-status-flex">
                     <div class="pie-chart-wrapper">
-                        <canvas id="appStatusPie" width="230" height="230"></canvas>
+                        <canvas id="appStatusPie" width="340" height="340"></canvas>
                     </div>
                     <ul class="pie-legend-list">
                         <?php foreach ($status_labels as $i => $label): ?>
