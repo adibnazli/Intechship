@@ -25,11 +25,31 @@ $sql_total_app = "SELECT COUNT(*) AS total FROM student_application sa JOIN stud
 $result_total_app = mysqli_query($conn, $sql_total_app);
 $total_applications = mysqli_fetch_assoc($result_total_app)['total'] ?? 0;
 
-// Completion Rate (Accepted / Total Applications * 100, filtered)
-$sql_accepted = "SELECT COUNT(*) AS total FROM student_application sa JOIN student s ON sa.StudentID = s.StudentID WHERE sa.App_Status = 'Accepted'" . ($student_filter_sql ? " AND s.Stud_Programme LIKE '" . mysqli_real_escape_string($conn, $likeValue) . "'" : '');
-$result_accepted = mysqli_query($conn, $sql_accepted);
-$total_accepted = mysqli_fetch_assoc($result_accepted)['total'] ?? 0;
-$completion_rate = $total_applications > 0 ? round(($total_accepted / $total_applications) * 100) : 0;
+// Get all students (filtered)
+$students = [];
+$res_students = mysqli_query($conn, "SELECT StudentID FROM student" . $student_filter_sql);
+if ($res_students) {
+    while ($row = mysqli_fetch_assoc($res_students)) {
+        $students[] = $row['StudentID'];
+    }
+}
+
+// Completion Rate (Accepted / Total Students * 100, filtered)
+$students_with_accepted = 0;
+if (!empty($students)) {
+    foreach ($students as $sid) {
+        $statuses = [];
+        $res = mysqli_query($conn, "SELECT App_Status FROM student_application WHERE StudentID = $sid");
+        while ($row = $res ? mysqli_fetch_assoc($res) : false) {
+            $statuses[] = $row['App_Status'];
+        }
+        $statuses = array_unique($statuses);
+        if (in_array('Accepted', $statuses)) {
+            $students_with_accepted++;
+        }
+    }
+}
+$completion_rate = count($students) > 0 ? round(($students_with_accepted / count($students)) * 100) : 0;
 
 // Top Application Companies (filtered)
 $sql_top_companies = "
@@ -65,12 +85,6 @@ $pie_status_colors = [
     'Completed' => '#00C853'
 ];
 
-// Get all students (filtered)
-$students = [];
-$res_students = mysqli_query($conn, "SELECT StudentID FROM student" . $student_filter_sql);
-while ($row = mysqli_fetch_assoc($res_students)) {
-    $students[] = $row['StudentID'];
-}
 foreach ($students as $sid) {
     $statuses = [];
     $res = mysqli_query($conn, "SELECT App_Status FROM student_application WHERE StudentID = $sid");
@@ -79,31 +93,22 @@ foreach ($students as $sid) {
     }
     $statuses = array_unique($statuses);
     if (in_array('Accepted', $statuses)) {
+        // If any application is Accepted, student is Completed
         $pie_status_counts['Completed']++;
     } elseif (in_array('Pending', $statuses)) {
+        // If no Accepted, but has Pending, student is Pending
         $pie_status_counts['Pending']++;
     } elseif (in_array('Declined', $statuses)) {
-        // If Declined but also has Accepted, already counted above
-        // If Declined but no Accepted, check if has any other status
-        if (count($statuses) == 1) {
-            $pie_status_counts['In Progress']++;
+        // If Declined but also has Accepted, student is Completed (already handled above)
+        // If Declined but no Accepted, student is In Progress
+        if (in_array('Accepted', $statuses)) {
+            // Already handled above, skip
+            continue;
         } else {
-            // If has In Review, Interview, Offered, Rejected, count as In Progress
-            $in_progress_statuses = ['In Review', 'Interview', 'Offered', 'Rejected'];
-            $has_in_progress = false;
-            foreach ($in_progress_statuses as $s) {
-                if (in_array($s, $statuses)) {
-                    $has_in_progress = true;
-                    break;
-                }
-            }
-            if ($has_in_progress) {
-                $pie_status_counts['In Progress']++;
-            } else {
-                $pie_status_counts['In Progress']++;
-            }
+            $pie_status_counts['In Progress']++;
         }
     } elseif (array_intersect(['In Review', 'Interview', 'Offered', 'Rejected'], $statuses)) {
+        // If has any In Progress status, student is In Progress
         $pie_status_counts['In Progress']++;
     }
 }

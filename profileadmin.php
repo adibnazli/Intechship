@@ -251,7 +251,8 @@ function loadStats() {
         if (data && data.success) {
             $('#students-count').text(data.student_total);
             $('#applied-count').text(data.applied_total);
-            $('#success-count').text(data.success_rate); // Use percentage for completion rate
+            // Show actual successful count, not percentage or dash
+            $('#success-count').text(data.success_total !== undefined ? data.success_total : '-');
         } else {
             $('#students-count').text('-');
             $('#applied-count').text('-');
