@@ -1,33 +1,59 @@
 <?php
 session_start();
-include('config/config.php');
+include 'config/config.php';
 
-$Stud_Name = $_SESSION['Stud_Name'] ?? '';
-$Email = $_SESSION['Email'] ?? '';
-$Stud_MatricNo = $_SESSION['Stud_MatricNo'] ?? '';
+if (empty($_SESSION['Email']) || empty($_SESSION['Stud_MatricNo'])) {
+    die('Session expired');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password = $_POST['password'];
-    $repassword = $_POST['repassword'];
+
+    $Email      = $_SESSION['Email'];
+    $MatricNo   = $_SESSION['Stud_MatricNo'];
+    $password   = $_POST['password']   ?? '';
+    $repassword = $_POST['repassword'] ?? '';
 
     if ($password !== $repassword) {
-        echo "<script>alert('Passwords do not match!!!');</script>";
-        echo "<meta http-equiv='refresh' content='2;URL=register.php'>";
+        echo "<script>alert('Passwords do not match!');</script>";
+        echo "<meta http-equiv='refresh' content='0;URL=register.php'>";
+        exit;
+    }
+
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
+
+    //kemas kini update
+    $upd = $conn->prepare("
+        UPDATE dummy_student
+        SET password = ?, approve = 0
+        WHERE Email = ? AND Stud_MatricNo = ?
+    ");
+    $upd->bind_param('sss', $hashed, $Email, $MatricNo);
+    $upd->execute();
+
+    //masukkan data ke dalam jadual student
+    $ins = $conn->prepare("
+        INSERT INTO student (Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme, Stud_protype,Email, password, Approve, Identity)
+        SELECT Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme, Stud_protype,Email, ?, 0, Identity
+        FROM dummy_student
+        WHERE Email = ? ON DUPLICATE KEY UPDATE
+            Stud_Phone     = VALUES(Stud_Phone),
+            Stud_Programme = VALUES(Stud_Programme),
+            Stud_protype   = VALUES(Stud_protype),
+            password       = VALUES(password),
+            Approve        = VALUES(Approve),
+            Identity       = VALUES(Identity)
+    ");
+    
+    $ins->bind_param('ss', $hashed, $Email);
+    $ins->execute();
+
+    //prompt
+    if ($upd->affected_rows > 0 || $ins->affected_rows > 0) {
+        echo "<script>alert('Registration successful! Awaiting admin approval');</script>";
+        echo "<meta http-equiv='refresh' content='0;URL=login.html'>";
     } else {
-        
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $sql = "UPDATE student SET password = ?, approve = 0 WHERE Email = ? AND Stud_MatricNo = ?";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $hashedPassword, $Email, $Stud_MatricNo);
-        
-        if ($stmt->execute()) {
-            echo "<script>alert('Registration successful!!! Please wait for Admin approval.'); window.location.href='login.html';</script>";
-
-        } else {
-            echo "<script>alert('Error: Cannot register');</script>";
-        }
+        echo "<script>alert('Registration failed');</script>";
+        echo "<meta http-equiv='refresh' content='0;URL=register.php'>";
     }
 }
 ?>

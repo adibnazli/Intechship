@@ -3,32 +3,56 @@ session_start();
 include('config/config.php');
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $Email    = $_POST['Email'] ?? '';
+    $Identity = $_POST['idno'] ?? ''; 
 
-    $Email = $_POST['Email'];
-    $Stud_MatricNo = $_POST['matricno'];
+    if (!str_ends_with(strtolower($Email), '@student.utem.edu.my')) {
+        echo "<script>alert('Only student.utem.edu.my emails allowed');</script>";
+        echo "<meta http-equiv='refresh' content='0;URL=StudentCheck.php'>";
+        exit;
+    }
 
-    $sql = "SELECT * FROM student WHERE Email = '$Email' AND Stud_MatricNo = '$Stud_MatricNo'";
-    $result = $conn->query($sql);
+    $sql  = "SELECT * FROM dummy_student WHERE Email = ? AND Identity = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $Email, $Identity);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result && $result->num_rows === 1) {
         $row = $result->fetch_assoc();
-        $_SESSION['Stud_Name'] = $row['Stud_Name'] ?? '';
-        $_SESSION['Email'] = $row['Email'] ?? '';
+
+        if (isset($row['approve']) && $row['approve'] == 3) {
+            echo "<script>alert('Your account request was rejected. Please contact the PIC for further information.');</script>";
+            echo "<meta http-equiv='refresh' content='0;URL=StudentCheck.php'>";
+            exit;
+        }
+
+        if (isset($row['approve']) && $row['approve'] == 0) {
+            echo "<script>alert('Your account is still pending approval.');</script>";
+            echo "<meta http-equiv='refresh' content='0;URL=StudentCheck.php'>";
+            exit;
+        }
+
+        $_SESSION['Stud_Name']     = $row['Stud_Name'] ?? '';
+        $_SESSION['Email']         = $row['Email'] ?? '';
         $_SESSION['Stud_MatricNo'] = $row['Stud_MatricNo'] ?? '';
 
-        if ($row['approve'] == 1) {
-            echo "<script>alert('Student approved! Please log in.')</script>";
-            session_unset();
-            echo "<meta http-equiv='refresh' content='2;URL=login.html'>";
-        } 
-        else {
-            echo "<script>window.location.href = 'register.php';</script>";
+        $check  = $conn->prepare("SELECT 1 FROM student WHERE Email = ?");
+        $check->bind_param("s", $Email);
+        $check->execute();
+        $exists = $check->get_result()->num_rows;
+
+        if ($exists) {
+            echo "<script>alert('Account already exists! Please login');</script>";
+            echo "<meta http-equiv='refresh' content='0;URL=login.html'>";
+        } else {
+            header("Location: register.php");
         }
-    } 
-    else {
-        echo "<script>alert('Student Not found!')</script>";
-        session_unset();
-        echo "<meta http-equiv='refresh' content='2;URL=StudentCheck.php'>";
+        exit;
+    } else {
+        echo "<script>alert('Student not found');</script>";
+        echo "<meta http-equiv='refresh' content='0;URL=StudentCheck.php'>";
+        exit;
     }
 }
 ?>

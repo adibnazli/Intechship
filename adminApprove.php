@@ -5,12 +5,20 @@ include('AdminHeader.php');
 
 $adminProgram = $_SESSION['Program_Desc'] ?? '';
 
-if (!empty($adminProgram)) {
-    $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_protype = ?");
-    $stmt->bind_param("s", $adminProgram);
+if (!empty($adminProgram)) 
+{
+    if ($adminProgram === 'Diploma') 
+    {
+        $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_protype = 'Diploma'");
+    } 
+    else {
+        $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_protype = ?");
+        $stmt->bind_param("s", $adminProgram);
+    }
     $stmt->execute();
     $result = $stmt->get_result();
-} else {
+} 
+else {
     $result = $conn->query("SELECT * FROM student WHERE password IS NOT NULL");
 }
 ?>
@@ -28,28 +36,24 @@ if (!empty($adminProgram)) {
       margin: 0;
       padding: 0;
     }
-
     .container {
       background-color: #ffffff;
-        width: 80%;
-        margin: 50px auto;
-        padding: 50px;
-        border-radius: 10px;
-        justify-content: space-between;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      margin: 50px auto;
+      padding: 50px;
+      border-radius: 10px;
+      justify-content: space-between;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
-
     h1 {
       margin-bottom: 5px;
     }
-
     .dashboard-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
-
     .status-indicator {
       padding: 5px 12px;
       background: orange;
@@ -57,19 +61,16 @@ if (!empty($adminProgram)) {
       font-weight: bold;
       border-radius: 4px;
     }
-
     .search-bar {
       display: flex;
       margin-bottom: 20px;
     }
-
     .search-bar input {
       flex: 1;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px 0 0 4px;
     }
-
     .search-bar button {
       padding: 10px 20px;
       border: none;
@@ -78,18 +79,15 @@ if (!empty($adminProgram)) {
       border-radius: 0 4px 4px 0;
       cursor: pointer;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
     }
-
     th, td {
       padding: 12px;
       border-bottom: 1px solid #ddd;
       text-align: left;
     }
-
     .status-pending {
       background-color: #fff3cd;
       color: #856404;
@@ -97,7 +95,6 @@ if (!empty($adminProgram)) {
       border-radius: 4px;
       display: inline-block;
     }
-
     .status-approved {
       background-color: #d4edda;
       color: #155724;
@@ -105,49 +102,44 @@ if (!empty($adminProgram)) {
       border-radius: 4px;
       display: inline-block;
     }
-
     .status-rejected {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
     }
-    .btn-allow {
-    background-color: #007bff;
-    color: white;
-    padding: 6px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 5px;
+    .btn-allow, .btn-delete {
+      background-color: #007bff;
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 5px;
     }
-
-
+    .btn-delete {
+      background-color: #6c757d;
+    }
     .btn-approve, .btn-reject {
-    display: inline-block;
-    padding: 6px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    color: white;
-    margin-right: 5px;
-    white-space: nowrap;
+      display: inline-block;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      margin-right: 5px;
+      white-space: nowrap;
     }
-
-
     .btn-approve {
       background-color: #28a745;
-      margin-right: 5px;
     }
-
     .btn-reject {
       background-color: #dc3545;
     }
-
     .no-data {
       text-align: center;
       padding: 50px;
@@ -160,7 +152,7 @@ if (!empty($adminProgram)) {
     <div class="dashboard-header">
       <div>
         <h1>Student Approval</h1>
-        <p>Review and manage students for your program</p>
+        <p>Review and manage students for InTechShip</p>
       </div>
       <div class="status-indicator">Admin Panel</div>
     </div>
@@ -201,21 +193,22 @@ if (!empty($adminProgram)) {
                 <?php endif; ?>
               </td>
               <td>
-                <?php if (is_null($row['approve'])): ?>
-                    —
-                <?php elseif ($row['approve'] == 0): ?>
-                    <div style="white-space: nowrap;">
-                    <a class="btn-approve" href="approve.php?id=<?= $row['StudentID'] ?>">Approve</a>
-                    <a class="btn-reject" href="reject.php?id=<?= $row['StudentID'] ?>">Reject</a>
-                    </div>
-                <?php elseif ($row['approve'] == 3): ?>
-                    <div>
-                    <a class="btn-allow" href="allow.php?id=<?= $row['StudentID'] ?>">Allow</a>
-                    </div>
-                <?php else: ?>
-                    —
-                <?php endif; ?>
-                </td>
+                <?php $sid = $row['StudentID']; ?>
+                <div style="white-space: nowrap;">
+                  <?php if ($row['approve'] == 0): ?>
+
+                    <a class="btn-approve" href="approve.php?id=<?= $sid ?>">Approve</a>
+                    <a class="btn-reject" href="reject.php?id=<?= $sid ?>">Reject</a>
+                  <?php elseif ($row['approve'] == 1): ?>
+                    <a class="btn-delete" href="deleteStudent.php?id=<?= $sid ?>" onclick="return confirm('Are you sure to delete this student?')">Delete</a>
+
+                  <?php elseif ($row['approve'] == 3): ?>
+
+                    <a class="btn-allow" href="allow.php?id=<?= $sid ?>">Allow</a>
+                    <a class="btn-delete" href="deleteStudent.php?id=<?= $sid ?>" onclick="return confirm('Are you sure to delete this student?')">Delete</a>
+                  <?php endif; ?>
+                </div>
+              </td>
             </tr>
           <?php endwhile; ?>
         </tbody>
@@ -249,6 +242,7 @@ if (!empty($adminProgram)) {
       }
     });
   </script>
-  <?php include("footer.php"); ?>
 </body>
 </html>
+
+<?php include("footer.php"); ?>

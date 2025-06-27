@@ -8,18 +8,18 @@
 <body>
   <div class="main-container">
     <div class="left-content">
-      <div class="welcome"><h1>Welcome</h1></div>
+      <div class="welcome"><h1>Verify</h1></div>
       <div class="Register-Login">
         <div class="wrapper">
           <form action="checkStudent.php" method="post">
             <h1>Student</h1>
             <div class="input-box">
-              <input type="text" id="Email" name = "Email" placeholder="Email" autocomplete="off" required />
+              <input type="text" id="Email" name="Email" placeholder="Email" autocomplete="off" required />
               <i class="bx bxs-user"></i>
             </div>
             <div class="input-box">
-              <input type="text" name="matricno" id="matricno" placeholder="Matric Number" autocomplete="off" required />
-              <i class="bx bxs-graduation"></i>
+              <input type="text" name="idno" id="idno" placeholder="Identity Number" autocomplete="off" required />
+              <i class='bx bxs-id-card'></i>
             </div>
             <button type="submit" class="btn">Check</button>
           </form>
