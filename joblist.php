@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/config.php");
+include('config/connect.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $position = $_POST['job_title'];

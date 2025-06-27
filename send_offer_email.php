@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/config.php");
+include('config/connect.php');
 
 // Include PHPMailer
 require 'uploads/phpmailer/PHPMailer.php';

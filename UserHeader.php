@@ -1,5 +1,5 @@
 <!-- <?php
-include("config/config.php");
+include('config/connect.php');
 
 $sql = "SELECT Stud_Name FROM student";
 $result = $conn->query($sql);

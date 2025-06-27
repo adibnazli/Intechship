@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("AdminHeader.php");
-include("config/config.php"); // Adjust if different
+include('config/connect.php');
 
 if (!isset($_GET['id'])) {
     echo "Invalid request.";

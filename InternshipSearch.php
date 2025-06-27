@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("UserHeader.php");
-include("config/config.php");
+include('config/connect.php');
 
 // Access control: only logged-in students can access
 if (!isset($_SESSION['studentID'])) {

@@ -1,5 +1,5 @@
 <?php
-include('config/config.php');
+include('config/connect.php');
 
 $studentID = $_GET['id'] ?? '';
 

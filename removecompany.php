@@ -1,5 +1,5 @@
 <?php
-include("config/config.php");
+include('config/connect.php');
 
 if (isset($_GET['id'])) {
     $EmployerID = intval($_GET['id']);

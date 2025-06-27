@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('config/config.php');
+include('config/connect.php');
 include('AdminHeader.php');
 
 $adminProgram = $_SESSION['Program_Desc'] ?? '';

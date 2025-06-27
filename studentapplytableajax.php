@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-include(__DIR__ . "/config/config.php");
+include('config/connect.php');
 
 $program_desc = '';
 if (!empty($_SESSION['Program_Desc'])) {

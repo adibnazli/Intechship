@@ -1,6 +1,6 @@
 <?php
 include("UserHeader.php");
-include("config/config.php");
+include('config/connect.php');
 
 if (!isset($_GET['id'])) {
   echo "Invalid internship ID.";

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/config.php");
+include('config/connect.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $employerID = $_POST['employer_id'];

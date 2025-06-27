@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('config/config.php');
+include('config/connect.php');
 
 $studentID = $_GET['id'] ?? '';
 $picID = $_SESSION['PicID'] ?? null; //ID person_in_charge yang sedang login

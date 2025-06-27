@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/config.php';
+include('config/connect.php');
 
 if (empty($_SESSION['Email']) || empty($_SESSION['Stud_MatricNo'])) {
     die('Session expired');

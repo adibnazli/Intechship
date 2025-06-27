@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/config.php");
+include('config/connect.php');
 
 // Check if student is logged in
 if (!isset($_SESSION['studentID'])) {

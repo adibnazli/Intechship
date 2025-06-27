@@ -1,5 +1,5 @@
 <?php
-include("config/config.php");
+include('config/connect.php');
 
 if (isset($_SESSION['academicID'])) {
     $unitID = $_SESSION['academicID'];

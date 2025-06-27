@@ -6,7 +6,7 @@ if (!isset($_SESSION['Comp_Name'])) {
 }
 
 include("employerheader.php");
-include("config/config.php");
+include('config/connect.php');
 
 // Get only applications for this employer
 $sql = "SELECT student_application.*, 
