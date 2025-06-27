@@ -32,13 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //masukkan data ke dalam jadual student
     $ins = $conn->prepare("
-        INSERT INTO student (Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme, Stud_protype,Email, password, Approve, Identity)
-        SELECT Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme, Stud_protype,Email, ?, 0, Identity
+        INSERT INTO student (Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme,Email, password, Approve, Identity)
+        SELECT Stud_Name, Stud_MatricNo, Stud_Phone, Stud_Programme,Email, ?, 0, Identity
         FROM dummy_student
         WHERE Email = ? ON DUPLICATE KEY UPDATE
             Stud_Phone     = VALUES(Stud_Phone),
             Stud_Programme = VALUES(Stud_Programme),
-            Stud_protype   = VALUES(Stud_protype),
             password       = VALUES(password),
             Approve        = VALUES(Approve),
             Identity       = VALUES(Identity)

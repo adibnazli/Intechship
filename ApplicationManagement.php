@@ -123,6 +123,11 @@ $result = $stmt->get_result();
       margin-top: 8px;
       text-decoration: none;
     }
+    .application-received:hover {
+      background-color:rgb(197, 175, 32);
+      transform: translateY(-2px);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
     .threedots-wrapper {
       cursor: pointer;
       position: relative;
@@ -194,9 +199,7 @@ $result = $stmt->get_result();
               <td class="position">
                 <div><?= htmlspecialchars($row['Int_Position']) ?></div>
                 <?php if (!empty($row['Stud_ResumePath'])): ?>
-                  <a class="application-received" href="download_resume.php?appid=<?= $row['ApplicationID'] ?>" target="_blank">
-                    Application Received
-                    <img src="image/download-icon.png" alt="Download Resume" class="download-icon">
+                  <a class="application-received" href="download_resume.php?appid=<?= $row['ApplicationID'] ?>" target="_blank">Application Received<img src="image/download-icon.png" alt="Download Resume" class="download-icon">
                   </a>
                 <?php endif; ?>
               </td>

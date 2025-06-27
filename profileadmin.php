@@ -13,20 +13,18 @@ if (!empty($_SESSION['Program_Desc'])) {
 <title>PIC | Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-    background: #f4f4f4;
-    margin: 0;
-    font-family: 'Roboto', Arial, sans-serif;
-}
-.dashboard-title {
-    text-align: center;
-    font-size: 2.3rem;
-    font-weight: 700;
-    margin-top: 32px;
-    margin-bottom: 12px;
-    letter-spacing: -1.5px;
-}
-.stats-row {
+body { background: #f4f4f4; margin: 0; font-family: 'Roboto', sans-serif; }
+.dashboard-bg { background: #f4f4f4; min-height: 100vh; padding-top: 40px; }
+.dashboard-subtitle { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 2rem; text-align: center; margin-top: 16px; margin-bottom: 30px; }
+.dashboard-contentbox { background:rgb(236, 236, 236); border-radius: 0; padding: 60px 0 60px 0; max-width: 1450px; margin: 0 auto; }
+.dashboard-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 56px; }
+.stat-card {
+    background: #fff;
+    border-radius: 18px;
+    min-width: 260px;
+    max-width: 330px;
+    width: 330px;
+    height: 120px;
     display: flex;
     justify-content: center;
     gap: 30px;
