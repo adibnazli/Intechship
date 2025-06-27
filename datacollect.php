@@ -7,55 +7,38 @@ include 'AdminHeader.php';
 
 // --- Dashboard Analytics Data ---
 
-// Total Applications
-$sql_total_app = "SELECT COUNT(*) AS total FROM student_application";
+// Program filter
+$program_desc = '';
+if (!empty($_SESSION['Program_Desc'])) {
+    $program_desc = trim($_SESSION['Program_Desc']);
+}
+$likeValue = $program_desc . '%';
+$student_filter_sql = ($program_desc !== '') ? " WHERE Stud_Programme LIKE '" . mysqli_real_escape_string($conn, $likeValue) . "'" : '';
+
+// Total Users (from student table)
+$sql_total_user = "SELECT COUNT(*) AS total FROM student" . $student_filter_sql;
+$result_total_user = mysqli_query($conn, $sql_total_user);
+$total_users = mysqli_fetch_assoc($result_total_user)['total'] ?? 0;
+
+// Total Applications (filtered)
+$sql_total_app = "SELECT COUNT(*) AS total FROM student_application sa JOIN student s ON sa.StudentID = s.StudentID" . $student_filter_sql;
 $result_total_app = mysqli_query($conn, $sql_total_app);
 $total_applications = mysqli_fetch_assoc($result_total_app)['total'] ?? 0;
 
-// Completion Rate (Accepted / Total Applications * 100)
-$sql_accepted = "SELECT COUNT(*) AS total FROM student_application WHERE App_Status = 'Accepted'";
+// Completion Rate (Accepted / Total Applications * 100, filtered)
+$sql_accepted = "SELECT COUNT(*) AS total FROM student_application sa JOIN student s ON sa.StudentID = s.StudentID WHERE sa.App_Status = 'Accepted'" . ($student_filter_sql ? " AND s.Stud_Programme LIKE '" . mysqli_real_escape_string($conn, $likeValue) . "'" : '');
 $result_accepted = mysqli_query($conn, $sql_accepted);
 $total_accepted = mysqli_fetch_assoc($result_accepted)['total'] ?? 0;
 $completion_rate = $total_applications > 0 ? round(($total_accepted / $total_applications) * 100) : 0;
 
-// Total Users (from student table)
-$sql_total_user = "SELECT COUNT(*) AS total FROM student";
-$result_total_user = mysqli_query($conn, $sql_total_user);
-$total_users = mysqli_fetch_assoc($result_total_user)['total'] ?? 0;
-
-// Applications by Status for Pie Chart - now by unique students!
-$status_labels = [
-    "Pending",
-    "In review",
-    "Interview",
-    "Offered",
-    "Accepted",
-    "Declined",
-    "Rejected"
-];
-$status_colors = [
-    "Pending"    => "#FFD600", // yellow
-    "In review"  => "#ffe066", // light yellow
-    "Interview"  => "#2979ff", // blue
-    "Offered"    => "#b620ff", // purple
-    "Accepted"   => "#00C853", // green
-    "Declined"   => "#bdbdbd", // gray
-    "Rejected"   => "#D50000"  // red
-];
-$status_counts = [];
-foreach ($status_labels as $status) {
-    // Count unique students that have this status in at least one application
-    $sql = "SELECT COUNT(DISTINCT StudentID) AS total FROM student_application WHERE App_Status = '$status'";
-    $result = mysqli_query($conn, $sql);
-    $status_counts[] = (int)(mysqli_fetch_assoc($result)['total'] ?? 0);
-}
-
-// Top Application Companies
+// Top Application Companies (filtered)
 $sql_top_companies = "
     SELECT e.Comp_Name AS company, COUNT(*) AS applications
     FROM student_application sa
     JOIN intern_listings il ON sa.InternshipID = il.InternshipID
     JOIN employer e ON il.EmployerID = e.EmployerID
+    JOIN student s ON sa.StudentID = s.StudentID
+    " . $student_filter_sql . "
     GROUP BY e.Comp_Name
     ORDER BY applications DESC
     LIMIT 4";
@@ -64,12 +47,72 @@ $top_companies = [];
 while ($row = mysqli_fetch_assoc($result_top_companies)) {
     $top_companies[] = $row;
 }
+
+// Pie Chart: Each student only in one status (Pending, In Progress, Completed)
+$pie_status_labels = [
+    'Pending',
+    'In Progress',
+    'Completed'
+];
+$pie_status_counts = [
+    'Pending' => 0,
+    'In Progress' => 0,
+    'Completed' => 0
+];
+$pie_status_colors = [
+    'Pending' => '#FFD600',
+    'In Progress' => '#2979ff',
+    'Completed' => '#00C853'
+];
+
+// Get all students (filtered)
+$students = [];
+$res_students = mysqli_query($conn, "SELECT StudentID FROM student" . $student_filter_sql);
+while ($row = mysqli_fetch_assoc($res_students)) {
+    $students[] = $row['StudentID'];
+}
+foreach ($students as $sid) {
+    $statuses = [];
+    $res = mysqli_query($conn, "SELECT App_Status FROM student_application WHERE StudentID = $sid");
+    while ($row = mysqli_fetch_assoc($res)) {
+        $statuses[] = $row['App_Status'];
+    }
+    $statuses = array_unique($statuses);
+    if (in_array('Accepted', $statuses)) {
+        $pie_status_counts['Completed']++;
+    } elseif (in_array('Pending', $statuses)) {
+        $pie_status_counts['Pending']++;
+    } elseif (in_array('Declined', $statuses)) {
+        // If Declined but also has Accepted, already counted above
+        // If Declined but no Accepted, check if has any other status
+        if (count($statuses) == 1) {
+            $pie_status_counts['In Progress']++;
+        } else {
+            // If has In Review, Interview, Offered, Rejected, count as In Progress
+            $in_progress_statuses = ['In Review', 'Interview', 'Offered', 'Rejected'];
+            $has_in_progress = false;
+            foreach ($in_progress_statuses as $s) {
+                if (in_array($s, $statuses)) {
+                    $has_in_progress = true;
+                    break;
+                }
+            }
+            if ($has_in_progress) {
+                $pie_status_counts['In Progress']++;
+            } else {
+                $pie_status_counts['In Progress']++;
+            }
+        }
+    } elseif (array_intersect(['In Review', 'Interview', 'Offered', 'Rejected'], $statuses)) {
+        $pie_status_counts['In Progress']++;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>InTechShip Admin | Data Collection</title>
+    <title>PIC | Data Collection</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Righteous&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -242,9 +285,9 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
                         <canvas id="appStatusPie" width="340" height="340"></canvas>
                     </div>
                     <ul class="pie-legend-list">
-                        <?php foreach ($status_labels as $i => $label): ?>
+                        <?php foreach ($pie_status_labels as $i => $label): ?>
                             <li class="pie-legend-item">
-                                <span class="pie-legend-dot" style="background:<?php echo $status_colors[$label]; ?>"></span>
+                                <span class="pie-legend-dot" style="background:<?php echo $pie_status_colors[$label]; ?>;"></span>
                                 <span class="pie-legend-label"><?php echo $label; ?></span>
                             </li>
                         <?php endforeach; ?>
@@ -316,10 +359,10 @@ while ($row = mysqli_fetch_assoc($result_top_companies)) {
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: <?php echo json_encode($status_labels); ?>,
+                labels: <?php echo json_encode($pie_status_labels); ?>,
                 datasets: [{
-                    data: <?php echo json_encode($status_counts); ?>,
-                    backgroundColor: <?php echo json_encode(array_values($status_colors)); ?>,
+                    data: <?php echo json_encode(array_values($pie_status_counts)); ?>,
+                    backgroundColor: <?php echo json_encode(array_values($pie_status_colors)); ?>,
                     borderWidth: 0,
                 }]
             },
