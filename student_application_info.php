@@ -79,8 +79,8 @@ $stmt->close();
     border: none;
 }
 .status-in-review {
-    background: #ff9800;
-    color: #fff;
+    background:rgb(255, 220, 169);
+    color: rgb(168, 101, 0);
 }
 .status-offered {
     background: #E5D0FF;
@@ -95,16 +95,16 @@ $stmt->close();
     color: #2B834B;
 }
 .status-pending {
-    background: #FFD600;
-    color: #222;
+    background:rgb(255, 241, 173);
+    color: rgb(167, 139, 0);
 }
 .status-declined {
-    background: #8e24aa;
-    color: #fff;
+    background: #FFD1D1;
+    color: #D10000;
 }
 .status-other {
-    background: #E0E0E0;
-    color: #555;
+    background:rgb(147, 185, 255);
+    color: #fff;
 }
 @media (max-width: 700px) {
     .student-app-table-container {
