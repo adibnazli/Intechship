@@ -258,7 +258,6 @@ if (!$result_table) {
                             <th>Company</th>
                             <th>Date</th>
                             <th>Status</th>
-                            <th>Letter</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -284,14 +283,11 @@ if (!$result_table) {
                                             <?php echo ucfirst($status); ?>
                                         </span>
                                     </td>
-                                    <td>
-                                        No record
-                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="6" style="text-align:center;">No students found.</td>
+                                <td colspan="5" style="text-align:center;">No students found.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
