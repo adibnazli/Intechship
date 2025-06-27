@@ -5,21 +5,12 @@ include('AdminHeader.php');
 
 $adminProgram = $_SESSION['Program_Desc'] ?? '';
 
-if (!empty($adminProgram)) 
-{
-    if ($adminProgram === 'Diploma') 
-    {
-        $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_protype = 'Diploma'");
-    } 
-    else {
-        $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_protype = ?");
-        $stmt->bind_param("s", $adminProgram);
-    }
+if (!empty($adminProgram)) {
+    $likeValue = $adminProgram . '%'; // e.g., 'Diploma%'
+    $stmt = $conn->prepare("SELECT * FROM student WHERE password IS NOT NULL AND Stud_Programme LIKE ?");
+    $stmt->bind_param("s", $likeValue);
     $stmt->execute();
     $result = $stmt->get_result();
-} 
-else {
-    $result = $conn->query("SELECT * FROM student WHERE password IS NOT NULL");
 }
 ?>
 

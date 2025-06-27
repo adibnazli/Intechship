@@ -110,7 +110,16 @@ table.students-status th, table.students-status td { padding: 7px 6px; font-size
     font-weight: 700;
     display: inline-block;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
+
+.student-name-link td {
+    white-space: nowrap;
+}
+
 .student-name-link:hover { text-decoration: underline; }
 .applications-table { width: 99%; border-collapse: collapse; margin: 12px 0 0 0; }
 .applications-table th, .applications-table td { padding: 6px 11px; font-size: 1rem; white-space: nowrap; }
