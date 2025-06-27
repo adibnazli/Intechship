@@ -38,7 +38,7 @@ if ($res_students) {
 $students_with_accepted = 0;
 if (!empty($students)) {
     foreach ($students as $sid) {
-        $statuses = [];
+        $statuses = []; 
         $res = mysqli_query($conn, "SELECT App_Status FROM student_application WHERE StudentID = $sid");
         while ($row = $res ? mysqli_fetch_assoc($res) : false) {
             $statuses[] = $row['App_Status'];
@@ -50,6 +50,13 @@ if (!empty($students)) {
     }
 }
 $completion_rate = count($students) > 0 ? round(($students_with_accepted / count($students)) * 100) : 0;
+
+
+
+
+
+
+
 
 // Top Application Companies (filtered)
 $sql_top_companies = "

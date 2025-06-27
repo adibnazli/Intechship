@@ -79,8 +79,8 @@ $stmt->close();
     border: none;
 }
 .status-in-review {
-    background: #FFEECB;
-    color: #B48800;
+    background: #ff9800;
+    color: #fff;
 }
 .status-offered {
     background: #E5D0FF;
@@ -93,6 +93,14 @@ $stmt->close();
 .status-accepted {
     background: #D1FFD9;
     color: #2B834B;
+}
+.status-pending {
+    background: #FFD600;
+    color: #222;
+}
+.status-declined {
+    background: #8e24aa;
+    color: #fff;
 }
 .status-other {
     background: #E0E0E0;
@@ -133,7 +141,9 @@ if ($result->num_rows > 0) {
         // Status badge color logic
         $status = htmlspecialchars($row['App_Status']);
         $badgeClass = "status-other";
-        if (stripos($status, "review") !== false) $badgeClass = "status-in-review";
+        if (strcasecmp($status, "Pending") === 0) $badgeClass = "status-pending";
+        else if (strcasecmp($status, "Declined") === 0) $badgeClass = "status-declined";
+        else if (stripos($status, "review") !== false) $badgeClass = "status-in-review";
         else if (stripos($status, "offered") !== false) $badgeClass = "status-offered";
         else if (stripos($status, "reject") !== false) $badgeClass = "status-rejected";
         else if (stripos($status, "accept") !== false) $badgeClass = "status-accepted";

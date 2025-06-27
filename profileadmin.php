@@ -183,6 +183,8 @@ tr:nth-child(even) td { background: #f9f9f9;}
 .status-offered { background: #eb71ff; color:#222; }
 .status-rejected { background: #ffb2b2; }
 .status-accepted { background: #c6f98e; }
+.status-pending { background: #FFD600; color: #222; } /* dark yellow */
+.status-declined { background: #8e24aa; color: #fff; } /* purple */
 @media (max-width: 900px) {
     .center-card { padding: 18px 5vw; }
     .stats-row { flex-direction: column; gap: 16px; }
